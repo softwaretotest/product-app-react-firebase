@@ -1,0 +1,33 @@
+// Localization (i18n) + Currency formatting
+export const LANG = {
+  th: {
+    currency: "บาท",
+    piece: "ชิ้น",
+    product: "สินค้า",
+    add_product: "เพิ่ม สินค้าตัวใหม่",
+    edit: "เปลี่ยนแปลง",
+    delete: "ลบ",
+    save: "บันทึก",
+    cancel: "ยกเลิก",
+    name: "ชื่อสินค้า",
+    price: "ราคา",
+    stock: "จำนวณ",
+    all_product: "รายการสินค้า ทั้งหมด",
+    upload_image: "เลือกรูปภาพ",
+  },
+  ch: {
+    currency: "CHF",
+    piece: "Stück",
+    product: "Produkt",
+    add_product: "neu hinzufügen",
+    edit: "ändern",
+    delete: "löschen",
+    save: "speichern",
+    cancel: "abbrechen",
+    name: "Produktname",
+    price: "Preis",
+    stock: "Anzahl",
+    all_product: "Anzahl Sortiment",
+    upload_image: "Bild auswählen",
+  },
+};

@@ -1,0 +1,286 @@
+import { useEffect, useState, useRef } from "react";
+import {
+  getProducts,
+  addProduct,
+  deleteProduct,
+  updateProduct,
+  // uploadImage,  //-------for upload to Firestore-----
+} from "./services/productService";
+import "./styles/app.css";
+import { compressImage } from "./utils/image";
+import { LANG } from "./i18n";
+
+function App() {
+  const [products, setProducts] = useState([]);
+  const [preview, setPreview] = useState(null);
+  const [editing, setEditing] = useState(null);
+  const [highlightId, setHighlightId] = useState(null);
+  const [actionType, setActionType] = useState(null);
+  const [lang, setLang] = useState("th");
+  const L = LANG[lang];
+  const formatCurrency = (value, lang) => {
+    return new Intl.NumberFormat(lang === "th" ? "th-TH" : "de-CH", {
+      style: "currency",
+      currency: lang === "th" ? "THB" : "CHF",
+    }).format(value);
+  };
+  const loadProducts = async () => {
+    const list = await getProducts();
+
+    // เรียงใหม่สุดขึ้นบน
+    list.sort((a, b) => b.createdAt - a.createdAt);
+
+    setProducts(list);
+
+    // ลบสถานะ new หลัง 3 วิ
+    setTimeout(() => {
+      setProducts((prev) => prev.map((p) => ({ ...p, isNew: false })));
+    }, 3000);
+  };
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  return (
+    <div className="container">
+      <select value={lang} onChange={(e) => setLang(e.target.value)}>
+        <option value="th">ไทย</option>
+        <option value="ch">Deutsch (CH)</option>
+      </select>
+      <h1>{L.product}</h1>
+      <h2>
+        {L.all_product} ({products.length})
+      </h2>
+      {/* ----- NEW (ADD) ----- */}
+      {!editing && (
+        <div className="form-container">
+          <ProductForm
+            lang={lang}
+            onSubmit={async (data) => {
+              const newItem = {
+                ...data,
+                createdAt: Date.now(),
+                isNew: true,
+              };
+              const docId = await addProduct(newItem);
+              await loadProducts();
+              setActionType("add");
+              setHighlightId(docId); // use id as createdAt tempolary
+              setTimeout(() => setHighlightId(null), 10000); // 10s
+            }}
+          />
+        </div>
+      )}
+      {/* ----- EDIT ----- */}
+      {editing && (
+        <div className="form-container">
+          <ProductForm
+            initialData={editing}
+            lang={lang}
+            onSubmit={async (data) => {
+              const updatedItem = {
+                ...data,
+                createdAt: Date.now(),
+              };
+
+              await updateProduct(editing.id, updatedItem);
+              setEditing(null);
+              await loadProducts();
+              setActionType("edit");
+              setHighlightId(editing.id);
+              setTimeout(() => setHighlightId(null), 10000);
+            }}
+            onCancel={() => setEditing(null)}
+          />
+        </div>
+      )}
+      {products.map((p) => (
+        <div className="card" key={p.id}>
+          {p.id === highlightId && (
+            <span className="badge-new">
+              {actionType === "edit" ? "UPDATED" : "NEW"}
+            </span>
+          )}
+          {p.image && (
+            <img
+              src={p.image}
+              alt={p.name}
+              style={{ width: "100px", cursor: "pointer" }}
+              onClick={() => setPreview(p.image)}
+            />
+          )}
+          {preview && (
+            <div
+              onClick={() => setPreview(null)}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                background: "rgba(0,0,0,0.8)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <img
+                src={preview}
+                style={{ maxWidth: "90%", maxHeight: "90%" }}
+              />
+            </div>
+          )}
+          <h3>{p.name}</h3>
+          <p>
+            {L.price}: {formatCurrency(p.price, lang)}
+          </p>
+          <p>
+            {L.stock}: {p.stock} {L.piece}
+          </p>
+
+          {!editing && (
+            <button className="btn-edit" onClick={() => setEditing(p)}>
+              {L.edit}
+            </button>
+          )}
+          {!editing && (
+            <button
+              className="btn-delete"
+              onClick={async () => {
+                await deleteProduct(p.id);
+                loadProducts();
+              }}
+            >
+              {L.delete}
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ProductForm({ initialData: isEdit, onSubmit, onCancel, lang }) {
+  const [name, setName] = useState(isEdit?.name || "");
+  const [price, setPrice] = useState(isEdit?.price || "");
+  const [stock, setStock] = useState(isEdit?.stock || "");
+  const [image, setImage] = useState(isEdit?.image || "");
+  const [focused, setFocused] = useState(null);
+  const fileInputRef = useRef(null);
+  const L = LANG[lang];
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const compressed = await compressImage(file, 200);
+    setImage(compressed);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    //-------for upload to Firestore----- BEGINN
+    // let imageUrl = "";
+    // if (image) {
+    //   imageUrl = await uploadImage(image);
+    // }
+    //-------for upload to Firestore----- END
+
+    onSubmit({
+      name,
+      price: Number(price),
+      stock: Number(stock),
+      // image: imageUrl, //for upload to Firestore
+      image,
+    });
+
+    setName("");
+    setPrice("");
+    setStock("");
+    // setImage(""); // for image_URL
+    setImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  return (
+    <form className={isEdit ? "form-edit" : "form-add"} onSubmit={handleSubmit}>
+      <h2>{isEdit ? `${L.edit}` : `${L.add_product}`}</h2>
+
+      {/* <input
+        placeholder="Image URL"
+        value={image}
+        onChange={(e) => setImage(e.target.value)}
+      /> */}
+
+      <div className="input-group">
+        <p>{L.upload_image}</p>
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          // onChange={(e) => setImage(e.target.files[0])}  //for upload to Firestore
+          onChange={handleImageChange}
+        />
+        {image && (
+          <img
+            src={image}
+            alt="preview"
+            style={{ width: "65px", marginBottom: "5px" }}
+          />
+        )}
+      </div>
+
+      <div className="input-group">
+        <input
+          placeholder={focused === "name" ? "" : L.name}
+          onFocus={() => setFocused("name")}
+          onBlur={() => setFocused(null)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+
+      <div className="input-group">
+        <input
+          placeholder={focused === "price" ? "" : L.price}
+          value={price}
+          onFocus={() => setFocused("price")}
+          onBlur={() => setFocused(null)}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+        <span>{L.currency}</span>
+      </div>
+
+      <div className="input-group">
+        <input
+          placeholder={focused === "stock" ? "" : L.stock}
+          value={stock}
+          onFocus={() => setFocused("stock")}
+          onBlur={() => setFocused(null)}
+          onChange={(e) => setStock(e.target.value)}
+        />
+        <span>{L.piece}</span>
+      </div>
+
+      {!isEdit && (
+        <button className="btn-add" type="submit">
+          {L.add_product}
+        </button>
+      )}
+      {isEdit && (
+        <button className="btn-save" type="submit">
+          {L.save}
+        </button>
+      )}
+      {isEdit && (
+        <button className="btn-cancel" type="button" onClick={onCancel}>
+          {L.cancel}
+        </button>
+      )}
+    </form>
+  );
+}
+
+export default App;
