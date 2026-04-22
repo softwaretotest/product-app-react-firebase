@@ -18,6 +18,12 @@ function App() {
   const [actionType, setActionType] = useState(null);
   const [lang, setLang] = useState("th");
   const L = LANG[lang];
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   const formatCurrency = (value, lang) => {
     return new Intl.NumberFormat(lang === "th" ? "th-TH" : "de-CH", {
       style: "currency",
@@ -82,6 +88,7 @@ function App() {
               };
               const docId = await addProduct(newItem);
               await loadProducts();
+              scrollToTop();
               setActionType("add");
               setHighlightId(docId); // use id as createdAt tempolary
               setTimeout(() => setHighlightId(null), 10000); // 10s
@@ -105,6 +112,7 @@ function App() {
               await updateProduct(editing.id, updatedItem);
               setEditing(null);
               await loadProducts();
+              scrollToTop();
               setActionType("edit");
               setHighlightId(editing.id);
               setTimeout(() => setHighlightId(null), 10000);
