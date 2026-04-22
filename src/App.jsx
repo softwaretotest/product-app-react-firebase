@@ -42,6 +42,22 @@ function App() {
     loadProducts();
   }, []);
 
+  useEffect(() => {
+    if (!preview) return;
+
+    const handleKey = (e) => {
+      if (e.key === "Escape" || e.key === "Esc") {
+        setPreview(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKey);
+
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+    };
+  }, [preview]);
+
   return (
     <div className="container">
       <select value={lang} onChange={(e) => setLang(e.target.value)}>
@@ -57,6 +73,7 @@ function App() {
         <div className="form-container">
           <ProductForm
             lang={lang}
+            setPreview={setPreview}
             onSubmit={async (data) => {
               const newItem = {
                 ...data,
@@ -78,6 +95,7 @@ function App() {
           <ProductForm
             initialData={editing}
             lang={lang}
+            setPreview={setPreview}
             onSubmit={async (data) => {
               const updatedItem = {
                 ...data,
@@ -95,6 +113,7 @@ function App() {
           />
         </div>
       )}
+      {/* List all product */}
       {products.map((p) => (
         <div className="card" key={p.id}>
           {p.id === highlightId && (
@@ -123,8 +142,27 @@ function App() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                zIndex: 9999, // Picture on top layer
               }}
             >
+              {/* ❌ Close Button */}
+              <button
+                onClick={() => setPreview(null)}
+                style={{
+                  position: "absolute",
+                  top: "20px",
+                  right: "20px",
+                  fontSize: "24px",
+                  background: "transparent",
+                  color: "white",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                ✕
+              </button>
+
+              {/* 🖼️ Picture fullscreen */}
               <img
                 src={preview}
                 style={{ maxWidth: "90%", maxHeight: "90%" }}
@@ -161,7 +199,13 @@ function App() {
   );
 }
 
-function ProductForm({ initialData: isEdit, onSubmit, onCancel, lang }) {
+function ProductForm({
+  initialData: isEdit,
+  onSubmit,
+  onCancel,
+  lang,
+  setPreview,
+}) {
   const [name, setName] = useState(isEdit?.name || "");
   const [price, setPrice] = useState(isEdit?.price || "");
   const [stock, setStock] = useState(isEdit?.stock || "");
@@ -179,25 +223,16 @@ function ProductForm({ initialData: isEdit, onSubmit, onCancel, lang }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //-------for upload to Firestore----- BEGINN
-    // let imageUrl = "";
-    // if (image) {
-    //   imageUrl = await uploadImage(image);
-    // }
-    //-------for upload to Firestore----- END
-
     onSubmit({
       name,
       price: Number(price),
       stock: Number(stock),
-      // image: imageUrl, //for upload to Firestore
       image,
     });
 
     setName("");
     setPrice("");
     setStock("");
-    // setImage(""); // for image_URL
     setImage(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -208,26 +243,20 @@ function ProductForm({ initialData: isEdit, onSubmit, onCancel, lang }) {
     <form className={isEdit ? "form-edit" : "form-add"} onSubmit={handleSubmit}>
       <h2>{isEdit ? `${L.edit}` : `${L.add_product}`}</h2>
 
-      {/* <input
-        placeholder="Image URL"
-        value={image}
-        onChange={(e) => setImage(e.target.value)}
-      /> */}
-
       <div className="input-group">
         <p>{L.upload_image}</p>
         <input
           type="file"
           accept="image/*"
           ref={fileInputRef}
-          // onChange={(e) => setImage(e.target.files[0])}  //for upload to Firestore
           onChange={handleImageChange}
         />
         {image && (
           <img
             src={image}
             alt="preview"
-            style={{ width: "65px", marginBottom: "5px" }}
+            style={{ width: "65px", marginBottom: "5px", cursor: "pointer" }}
+            onClick={() => setPreview(image)}
           />
         )}
       </div>
