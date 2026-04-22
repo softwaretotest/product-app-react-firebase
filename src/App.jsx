@@ -19,12 +19,7 @@ function App() {
   const [lang, setLang] = useState("th");
   const L = LANG[lang];
   const [loadingId, setLoadingId] = useState(null);
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+
   const formatCurrency = (value, lang) => {
     return new Intl.NumberFormat(lang === "th" ? "th-TH" : "de-CH", {
       style: "currency",
@@ -34,12 +29,12 @@ function App() {
   const loadProducts = async () => {
     const list = await getProducts();
 
-    // เรียงใหม่สุดขึ้นบน
+    // last NEW or UPDATE on top
     list.sort((a, b) => b.createdAt - a.createdAt);
 
     setProducts(list);
 
-    // ลบสถานะ new หลัง 3 วิ
+    // delelte status NEW after 3s
     setTimeout(() => {
       setProducts((prev) => prev.map((p) => ({ ...p, isNew: false })));
     }, 3000);
@@ -51,38 +46,42 @@ function App() {
 
   useEffect(() => {
     if (!preview) return;
-
     const handleKey = (e) => {
       if (e.key === "Escape" || e.key === "Esc") {
         setPreview(null);
       }
     };
-
     window.addEventListener("keydown", handleKey);
-
     return () => {
       window.removeEventListener("keydown", handleKey);
     };
   }, [preview]);
 
   useEffect(() => {
-    if (highlightId) {
-      setTimeout(() => {
-        document.getElementById(highlightId)?.scrollIntoView({
+    if (!highlightId) return;
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById(highlightId);
+
+      if (el) {
+        el.scrollIntoView({
           behavior: "smooth",
-          block: "center",
+          block: "center", // 👈 สำคัญมาก
         });
-      }, 100);
+      }
+    }, 200); // wait until render complete
 
-      // stop glow after 10s
-      const timer = setTimeout(() => {
-        setHighlightId(null);
-      }, 10000);
+    const clear = setTimeout(() => {
+      setHighlightId(null);
+    }, 10000);
 
-      return () => clearTimeout(timer);
-    }
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(clear);
+    };
   }, [highlightId]);
 
+  // -------- make HTML -----------------
   return (
     <div className="container">
       <div className="header">
@@ -101,7 +100,7 @@ function App() {
       </div>
       {/* ----- NEW (ADD) ----- */}
       {!editing && (
-        <div className="form-container">
+        <div className="form-container" id="formTop">
           <ProductForm
             lang={lang}
             setPreview={setPreview}
@@ -113,7 +112,6 @@ function App() {
               };
               const docId = await addProduct(newItem);
               await loadProducts();
-              scrollToTop();
               setActionType("add");
               setHighlightId(docId); // use id as createdAt tempolary
               setTimeout(() => setHighlightId(null), 10000); // 10s
@@ -123,7 +121,7 @@ function App() {
       )}
       {/* ----- EDIT ----- */}
       {editing && (
-        <div className="form-container">
+        <div className="form-container" id="formTop">
           <ProductForm
             initialData={editing}
             lang={lang}
@@ -137,7 +135,6 @@ function App() {
               await updateProduct(editing.id, updatedItem);
               setEditing(null);
               await loadProducts();
-              scrollToTop();
               setActionType("edit");
               setHighlightId(editing.id);
               setTimeout(() => setHighlightId(null), 10000);
@@ -254,6 +251,7 @@ function ProductForm({
   const [focused, setFocused] = useState(null);
   const fileInputRef = useRef(null);
   const L = LANG[lang];
+  const [error, setError] = useState("");
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -263,6 +261,13 @@ function ProductForm({
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!name.trim()) {
+      setError(L.error_text);
+      return;
+    }
+
+    setError(""); // clear error
 
     onSubmit({
       name,
@@ -304,12 +309,17 @@ function ProductForm({
 
       <div className="input-group">
         <input
+          className={error ? "input-error" : ""}
           placeholder={focused === "name" ? "" : L.name}
           onFocus={() => setFocused("name")}
           onBlur={() => setFocused(null)}
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (error) setError("");
+          }}
         />
+        {error && <p className="error-text">{error}</p>}
       </div>
 
       <div className="input-group">

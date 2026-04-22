@@ -14,6 +14,7 @@ export const LANG = {
     stock: "จำนวณ",
     all_product: "ชนิด",
     upload_image: "เลือกรูปภาพ",
+    error_text: "ไม่มีข้อความ",
   },
   ch: {
     currency: "CHF",
@@ -29,5 +30,6 @@ export const LANG = {
     stock: "Anzahl",
     all_product: "Sortiment(en)",
     upload_image: "Bild auswählen",
+    error_text: "Text fehlt",
   },
 };
