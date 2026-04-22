@@ -159,7 +159,12 @@ function App() {
             <img
               src={p.image}
               alt={p.name}
-              style={{ width: "100px", cursor: "pointer" }}
+              style={{
+                width: "100px",
+                height: "100px", // 👈 fix สูง
+                objectFit: "cover", // 👈 ไม่ยืด ไม่เบี้ยว
+                cursor: "pointer",
+              }}
               onClick={() => setPreview(p.image)}
             />
           )}
@@ -252,7 +257,6 @@ function ProductForm({
   const fileInputRef = useRef(null);
   const L = LANG[lang];
   const [error, setError] = useState("");
-
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -301,7 +305,14 @@ function ProductForm({
           <img
             src={image}
             alt="preview"
-            style={{ width: "65px", marginBottom: "5px", cursor: "pointer" }}
+            style={{
+              width: "50px",
+              height: "50px",
+              margin: "1px",
+              objectFit: "cover",
+              borderRadius: "6px",
+              cursor: "pointer",
+            }}
             onClick={() => setPreview(image)}
           />
         )}
@@ -317,6 +328,14 @@ function ProductForm({
           onChange={(e) => {
             setName(e.target.value);
             if (error) setError("");
+          }}
+          onBlur={() => {
+            const trimmed = name.trim();
+            setName(trimmed); // 👈 ตัด space จริง (ดีมาก)
+
+            if (!trimmed) {
+              setError(L.error_text);
+            }
           }}
         />
         {error && <p className="error-text">{error}</p>}
