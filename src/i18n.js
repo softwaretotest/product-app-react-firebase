@@ -12,7 +12,7 @@ export const LANG = {
     name: "ชื่อสินค้า",
     price: "ราคา",
     stock: "จำนวณ",
-    all_product: "รายการสินค้า ทั้งหมด",
+    all_product: "ชนิด",
     upload_image: "เลือกรูปภาพ",
   },
   ch: {
@@ -27,7 +27,7 @@ export const LANG = {
     name: "Produktname",
     price: "Preis",
     stock: "Anzahl",
-    all_product: "Anzahl Sortiment",
+    all_product: "Sortiment(en)",
     upload_image: "Bild auswählen",
   },
 };

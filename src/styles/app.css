@@ -12,16 +12,37 @@ body {
 }
 
 h1 {
+  font-size: 1.7em;
+  text-decoration: underline;
   text-align: center;
   margin-bottom: 20px;
 }
 
+.header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.lang-switch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.count-product {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
 /* form */
 form {
   background: #ffffff;
   padding: 16px;
   border-radius: 10px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
@@ -147,4 +168,28 @@ button:hover {
 
 .card {
   position: relative;
+}
+
+.highlight {
+  animation:
+    glowPulse 1s ease-in-out infinite alternate,
+    zoomIn 0.4s ease;
+}
+
+@keyframes glowPulse {
+  from {
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.4);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(0, 255, 0, 1);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
 }

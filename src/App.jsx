@@ -18,6 +18,7 @@ function App() {
   const [actionType, setActionType] = useState(null);
   const [lang, setLang] = useState("th");
   const L = LANG[lang];
+  const [loadingId, setLoadingId] = useState(null);
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -64,16 +65,40 @@ function App() {
     };
   }, [preview]);
 
+  useEffect(() => {
+    if (highlightId) {
+      setTimeout(() => {
+        document.getElementById(highlightId)?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 100);
+
+      // stop glow after 10s
+      const timer = setTimeout(() => {
+        setHighlightId(null);
+      }, 10000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [highlightId]);
+
   return (
     <div className="container">
-      <select value={lang} onChange={(e) => setLang(e.target.value)}>
-        <option value="th">ไทย</option>
-        <option value="ch">Deutsch (CH)</option>
-      </select>
-      <h1>{L.product}</h1>
-      <h2>
-        {L.all_product} ({products.length})
-      </h2>
+      <div className="header">
+        <div className="lang-switch">
+          <select value={lang} onChange={(e) => setLang(e.target.value)}>
+            <option value="th">ไทย</option>
+            <option value="ch">Deutsch (CH)</option>
+          </select>
+        </div>
+        <h1>{L.product}</h1>
+        <div className="count-product">
+          <h2>
+            {products.length} {L.all_product}
+          </h2>
+        </div>
+      </div>
       {/* ----- NEW (ADD) ----- */}
       {!editing && (
         <div className="form-container">
@@ -123,7 +148,11 @@ function App() {
       )}
       {/* List all product */}
       {products.map((p) => (
-        <div className="card" key={p.id}>
+        <div
+          className={`card ${p.id === highlightId ? "highlight" : ""}`}
+          id={p.id}
+          key={p.id}
+        >
           {p.id === highlightId && (
             <span className="badge-new">
               {actionType === "edit" ? "UPDATED" : "NEW"}
@@ -192,13 +221,17 @@ function App() {
           )}
           {!editing && (
             <button
+              disabled={loadingId === p.id}
               className="btn-delete"
               onClick={async () => {
+                if (!window.confirm(`${L.delete}? ${p.name}`)) return;
+                setLoadingId(p.id);
                 await deleteProduct(p.id);
+                setLoadingId(null);
                 loadProducts();
               }}
             >
-              {L.delete}
+              {loadingId === p.id ? "..." : L.delete}
             </button>
           )}
         </div>
