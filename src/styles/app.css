@@ -135,7 +135,7 @@ button:hover {
 }
 
 .form-add {
-  background: #36c2a4;
+  background: #38c9a9;
 }
 
 .form-edit {
@@ -240,4 +240,19 @@ button:hover {
   color: white;
   border: none;
   cursor: pointer;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 400px;
 }

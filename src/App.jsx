@@ -17,6 +17,7 @@ function App() {
   const [actionType, setActionType] = useState(null);
   const [lang, setLang] = useState("th");
   const [loadingId, setLoadingId] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const L = LANG[lang];
 
@@ -66,6 +67,24 @@ function App() {
     return () => clearTimeout(clear);
   }, [highlightId]);
 
+  useEffect(() => {
+    if (showAddForm || editing) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showAddForm, editing]);
+
+  useEffect(() => {
+    if (showAddForm || editing) {
+      document.querySelector("input")?.focus();
+    }
+  }, [showAddForm, editing]);
+
   // ---------- ACTIONS ----------
   const handleAdd = async (data) => {
     const newItem = {
@@ -76,6 +95,10 @@ function App() {
     const docId = await addProduct(newItem);
     await loadProducts();
 
+    setShowAddForm(false);
+
+    // 🔥 scroll top ONLY here
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setActionType("add");
     setHighlightId(docId);
   };
@@ -92,7 +115,10 @@ function App() {
     await loadProducts();
 
     setActionType("edit");
-    setHighlightId(editing.id);
+    setHighlightId(id);
+    setEditing(null); // close modal
+
+    // ❌ no scroll
   };
 
   const handleDelete = async (id, name) => {
@@ -118,13 +144,22 @@ function App() {
         </div>
       )}
       {/* FORM */}
-      <FormSection
+      <ShowForm
+        showAddForm={showAddForm}
         editing={editing}
+        onClose={() => {
+          setShowAddForm(false);
+          setEditing(null);
+        }}
+        onSubmit={editing ? handleEdit : handleAdd}
         lang={lang}
         setPreview={setPreview}
-        onAdd={handleAdd}
-        onEdit={handleEdit}
-        onCancel={() => setEditing(null)}
+      />
+      <FormSection
+        editing={editing}
+        products={products}
+        setShowAddForm={setShowAddForm}
+        lang={lang}
       />
 
       {/* LIST */}
@@ -147,17 +182,62 @@ function App() {
 //////////////////////////////////////////////////////////
 // FORM SECTION
 //////////////////////////////////////////////////////////
-function FormSection({ editing, lang, setPreview, onAdd, onEdit, onCancel }) {
+function FormSection({
+  editing,
+  lang,
+  setPreview,
+  onAdd,
+  onEdit,
+  onCancel,
+  products,
+  setShowAddForm,
+}) {
+  const L = LANG[lang];
   return (
     <div className="form-container">
-      <ProductForm
-        key={editing?.id || "new"}
-        initialData={editing}
-        lang={lang}
-        setPreview={setPreview}
-        onSubmit={editing ? onEdit : onAdd}
-        onCancel={editing ? onCancel : null}
-      />
+      {products.length === 0 ? (
+        <ProductForm
+          key={editing?.id || "new"}
+          initialData={editing}
+          lang={lang}
+          setPreview={setPreview}
+          onSubmit={editing ? onEdit : onAdd}
+          onCancel={editing ? onCancel : null}
+        /> // show always
+      ) : (
+        <button className="btn-add" onClick={() => setShowAddForm(true)}>
+          {L.add_product}
+        </button>
+      )}
+    </div>
+  );
+}
+
+//////////////////////////////////////////////////////////
+// SHOW FORM
+//////////////////////////////////////////////////////////
+function ShowForm({
+  showAddForm,
+  editing,
+  onClose,
+  onSubmit,
+  lang,
+  setPreview,
+}) {
+  if (!showAddForm && !editing) return null;
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <ProductForm
+          key={editing?.id || "new"}
+          initialData={editing}
+          onSubmit={onSubmit}
+          onCancel={onClose}
+          lang={lang}
+          setPreview={setPreview}
+        />
+      </div>
     </div>
   );
 }
@@ -169,7 +249,6 @@ function ProductList({
   products,
   highlightId,
   actionType,
-  preview,
   setPreview,
   formatCurrency,
   lang,
@@ -187,7 +266,6 @@ function ProductList({
           p={p}
           highlightId={highlightId}
           actionType={actionType}
-          preview={preview}
           setPreview={setPreview}
           formatCurrency={formatCurrency}
           lang={lang}
@@ -208,7 +286,6 @@ function ProductCard({
   p,
   highlightId,
   actionType,
-  preview,
   setPreview,
   formatCurrency,
   lang,
@@ -224,7 +301,7 @@ function ProductCard({
     >
       {p.id === highlightId && (
         <span className="badge-new">
-          {actionType === "edit" ? "UPDATED" : "NEW"}
+          {actionType === "edit" ? L.update : L.new}
         </span>
       )}
 
@@ -373,13 +450,13 @@ function ProductForm({
         onChange={(e) => setStock(e.target.value)}
       />
 
-      <button type="submit">{isEdit ? L.save : L.add_product}</button>
+      <button className="btn-add" type="submit">
+        {isEdit ? L.save : L.add_product}
+      </button>
 
-      {isEdit && (
-        <button type="button" onClick={onCancel}>
-          {L.cancel}
-        </button>
-      )}
+      <button className="btn-cancel" type="button" onClick={onCancel}>
+        {L.cancel}
+      </button>
     </form>
   );
 }
