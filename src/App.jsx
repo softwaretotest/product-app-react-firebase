@@ -84,7 +84,7 @@ function App() {
   // -------- make HTML -----------------
   return (
     <div className="container">
-      <div className="header">
+      {/* <div className="header">
         <div className="lang-switch">
           <select value={lang} onChange={(e) => setLang(e.target.value)}>
             <option value="th">ไทย</option>
@@ -97,7 +97,7 @@ function App() {
             {products.length} {L.all_product}
           </h2>
         </div>
-      </div>
+      </div> */}
       {/* ----- NEW (ADD) ----- */}
       {!editing && (
         <div className="form-container" id="formTop">
