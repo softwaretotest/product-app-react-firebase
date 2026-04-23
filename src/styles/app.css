@@ -8,7 +8,7 @@ body {
 .container {
   max-width: 600px;
   margin: auto;
-  padding: 20px;
+  padding: 2px;
 }
 
 h1 {
@@ -67,13 +67,15 @@ input::placeholder {
 
 /* product card */
 .card {
+  position: relative;
   background: white;
   padding: 14px;
   border-radius: 10px;
   margin-bottom: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   /* form + padding + safe zone , to solve form on card wenn auto scroll */
-  scroll-margin-top: 200px;
+  scroll-margin-top: 120px;
+  scroll-margin-bottom: 80px;
 }
 
 .card h3 {
@@ -149,7 +151,7 @@ button:hover {
   top: 0;
   z-index: 10;
   background: white; /* หรือ dark mode ของคุณ */
-  padding: 10px;
+  padding: 2px;
   border-bottom: 1px solid #ccc;
 }
 
@@ -170,10 +172,6 @@ button:hover {
   50% {
     opacity: 0;
   }
-}
-
-.card {
-  position: relative;
 }
 
 .highlight {
@@ -213,7 +211,33 @@ button:hover {
 }
 
 .list-container {
-  height: calc(100vh - 180px); /* ปรับตามความสูง form */
+  min-height: calc(100vh - 180px); /* ปรับตามความสูง form */
   overflow-y: auto;
   padding-top: 10px;
+}
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999; /* สูงกว่า sticky */
+}
+
+.preview-overlay img {
+  max-width: 90%;
+  max-height: 90%;
+}
+
+.preview-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
