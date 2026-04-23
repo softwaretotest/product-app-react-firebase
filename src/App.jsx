@@ -121,6 +121,7 @@ function App() {
       )}
       {/* ----- EDIT ----- */}
       {editing && (
+        // FIXED FORM
         <div className="form-container" id="formTop">
           <ProductForm
             initialData={editing}
@@ -143,101 +144,104 @@ function App() {
           />
         </div>
       )}
-      {/* List all product */}
-      {products.map((p) => (
-        <div
-          className={`card ${p.id === highlightId ? "highlight" : ""}`}
-          id={p.id}
-          key={p.id}
-        >
-          {p.id === highlightId && (
-            <span className="badge-new">
-              {actionType === "edit" ? "UPDATED" : "NEW"}
-            </span>
-          )}
-          {p.image && (
-            <img
-              src={p.image}
-              alt={p.name}
-              style={{
-                width: "100px",
-                height: "100px", // 👈 fix สูง
-                objectFit: "cover", // 👈 ไม่ยืด ไม่เบี้ยว
-                cursor: "pointer",
-              }}
-              onClick={() => setPreview(p.image)}
-            />
-          )}
-          {preview && (
-            <div
-              onClick={() => setPreview(null)}
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "rgba(0,0,0,0.8)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 9999, // Picture on top layer
-              }}
-            >
-              {/* ❌ Close Button */}
-              <button
-                onClick={() => setPreview(null)}
+      {/* // SCROLL AREA  */}
+      <div className="list-container">
+        {/* List all product */}
+        {products.map((p) => (
+          <div
+            className={`card ${p.id === highlightId ? "highlight" : ""}`}
+            id={p.id}
+            key={p.id}
+          >
+            {p.id === highlightId && (
+              <span className="badge-new">
+                {actionType === "edit" ? "UPDATED" : "NEW"}
+              </span>
+            )}
+            {p.image && (
+              <img
+                src={p.image}
+                alt={p.name}
                 style={{
-                  position: "absolute",
-                  top: "20px",
-                  right: "20px",
-                  fontSize: "24px",
-                  background: "transparent",
-                  color: "white",
-                  border: "none",
+                  width: "100px",
+                  height: "100px", // 👈 fix สูง
+                  objectFit: "cover", // 👈 ไม่ยืด ไม่เบี้ยว
                   cursor: "pointer",
                 }}
-              >
-                ✕
-              </button>
-
-              {/* 🖼️ Picture fullscreen */}
-              <img
-                src={preview}
-                style={{ maxWidth: "90%", maxHeight: "90%" }}
+                onClick={() => setPreview(p.image)}
               />
-            </div>
-          )}
-          <h3>{p.name}</h3>
-          <p>
-            {L.price}: {formatCurrency(p.price, lang)}
-          </p>
-          <p>
-            {L.stock}: {p.stock} {L.piece}
-          </p>
+            )}
+            {preview && (
+              <div
+                onClick={() => setPreview(null)}
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "rgba(0,0,0,0.8)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  zIndex: 9999, // Picture on top layer
+                }}
+              >
+                {/* ❌ Close Button */}
+                <button
+                  onClick={() => setPreview(null)}
+                  style={{
+                    position: "absolute",
+                    top: "20px",
+                    right: "20px",
+                    fontSize: "24px",
+                    background: "transparent",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  ✕
+                </button>
 
-          {!editing && (
-            <button className="btn-edit" onClick={() => setEditing(p)}>
-              {L.edit}
-            </button>
-          )}
-          {!editing && (
-            <button
-              disabled={loadingId === p.id}
-              className="btn-delete"
-              onClick={async () => {
-                if (!window.confirm(`${L.delete}? ${p.name}`)) return;
-                setLoadingId(p.id);
-                await deleteProduct(p.id);
-                setLoadingId(null);
-                loadProducts();
-              }}
-            >
-              {loadingId === p.id ? "..." : L.delete}
-            </button>
-          )}
-        </div>
-      ))}
+                {/* 🖼️ Picture fullscreen */}
+                <img
+                  src={preview}
+                  style={{ maxWidth: "90%", maxHeight: "90%" }}
+                />
+              </div>
+            )}
+            <h3>{p.name}</h3>
+            <p>
+              {L.price}: {formatCurrency(p.price, lang)}
+            </p>
+            <p>
+              {L.stock}: {p.stock} {L.piece}
+            </p>
+
+            {!editing && (
+              <button className="btn-edit" onClick={() => setEditing(p)}>
+                {L.edit}
+              </button>
+            )}
+            {!editing && (
+              <button
+                disabled={loadingId === p.id}
+                className="btn-delete"
+                onClick={async () => {
+                  if (!window.confirm(`${L.delete}? ${p.name}`)) return;
+                  setLoadingId(p.id);
+                  await deleteProduct(p.id);
+                  setLoadingId(null);
+                  loadProducts();
+                }}
+              >
+                {loadingId === p.id ? "..." : L.delete}
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

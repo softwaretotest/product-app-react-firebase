@@ -148,7 +148,7 @@ button:hover {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: #fff; /* หรือ dark mode ของคุณ */
+  background: white; /* หรือ dark mode ของคุณ */
   padding: 10px;
   border-bottom: 1px solid #ccc;
 }
@@ -210,4 +210,9 @@ button:hover {
   font-size: 15px;
   margin-top: -8px;
   margin-bottom: 8px;
+}
+.list-container {
+  height: calc(100vh - 180px); /* ปรับตามความสูง form */
+  overflow-y: auto;
+  padding-top: 10px;
 }
