@@ -19,7 +19,7 @@ export const LANG = {
     new: "ใหม่",
   },
   ch: {
-    currency: "CHF",
+    currency: "Franken",
     piece: "Stück",
     product: "Produkt",
     add_product: "neu hinzufügen",

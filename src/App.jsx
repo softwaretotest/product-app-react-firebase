@@ -15,7 +15,7 @@ function App() {
   const [editing, setEditing] = useState(null);
   const [highlightId, setHighlightId] = useState(null);
   const [actionType, setActionType] = useState(null);
-  const [lang, setLang] = useState("th");
+  const [lang] = useState("th");
   const [loadingId, setLoadingId] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -144,23 +144,22 @@ function App() {
         </div>
       )}
       {/* FORM */}
-      <ShowForm
-        showAddForm={showAddForm}
-        editing={editing}
-        onClose={() => {
-          setShowAddForm(false);
-          setEditing(null);
-        }}
-        onSubmit={editing ? handleEdit : handleAdd}
-        lang={lang}
-        setPreview={setPreview}
-      />
-      <FormSection
-        editing={editing}
-        products={products}
-        setShowAddForm={setShowAddForm}
-        lang={lang}
-      />
+      <div className="form-container">
+        <ShowForm
+          showAddForm={showAddForm}
+          editing={editing}
+          onClose={() => {
+            setShowAddForm(false);
+            setEditing(null);
+          }}
+          onSubmit={editing ? handleEdit : handleAdd}
+          lang={lang}
+          setPreview={setPreview}
+        />
+        <button className="btn-add" onClick={() => setShowAddForm(true)}>
+          {L.add_product}
+        </button>
+      </div>
 
       {/* LIST */}
       <ProductList
@@ -175,40 +174,6 @@ function App() {
         onEdit={setEditing}
         onDelete={handleDelete}
       />
-    </div>
-  );
-}
-
-//////////////////////////////////////////////////////////
-// FORM SECTION
-//////////////////////////////////////////////////////////
-function FormSection({
-  editing,
-  lang,
-  setPreview,
-  onAdd,
-  onEdit,
-  onCancel,
-  products,
-  setShowAddForm,
-}) {
-  const L = LANG[lang];
-  return (
-    <div className="form-container">
-      {products.length === 0 ? (
-        <ProductForm
-          key={editing?.id || "new"}
-          initialData={editing}
-          lang={lang}
-          setPreview={setPreview}
-          onSubmit={editing ? onEdit : onAdd}
-          onCancel={editing ? onCancel : null}
-        /> // show always
-      ) : (
-        <button className="btn-add" onClick={() => setShowAddForm(true)}>
-          {L.add_product}
-        </button>
-      )}
     </div>
   );
 }
@@ -321,7 +286,7 @@ function ProductCard({
 
       <h3>{p.name}</h3>
       <p>
-        {L.price}: {formatCurrency(p.price, lang)}
+        {L.price}: {formatCurrency(p.price, lang)} {L.currency}
       </p>
       <p>
         {L.stock}: {p.stock} {L.piece}
@@ -394,13 +359,15 @@ function ProductForm({
 
       {/* ✅ IMAGE UPLOAD */}
       <div className="input-group">
+        <span>{L.upload_image}</span>
+        {/* upload image box */}
         <input
           type="file"
           accept="image/*"
           ref={fileInputRef}
           onChange={handleImageChange}
         />
-
+        {/* little image */}
         {image && (
           <img
             src={image}
@@ -437,18 +404,24 @@ function ProductForm({
       {error && <p className="error-text">{error}</p>}
 
       {/* PRICE */}
-      <input
-        placeholder={L.price}
-        value={price}
-        onChange={(e) => setPrice(e.target.value)}
-      />
+      <div className="input-group">
+        <input
+          placeholder={L.price}
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+        <span>{L.currency}</span>
+      </div>
 
       {/* STOCK */}
-      <input
-        placeholder={L.stock}
-        value={stock}
-        onChange={(e) => setStock(e.target.value)}
-      />
+      <div className="input-group">
+        <input
+          placeholder={L.stock}
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+        />
+        <span>{L.piece}</span>
+      </div>
 
       <button className="btn-add" type="submit">
         {isEdit ? L.save : L.add_product}
