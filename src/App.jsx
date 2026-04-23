@@ -66,7 +66,7 @@ function App() {
       if (el) {
         el.scrollIntoView({
           behavior: "smooth",
-          block: "center", // 👈 สำคัญมาก
+          block: "center",
         });
       }
     }, 200); // wait until render complete
