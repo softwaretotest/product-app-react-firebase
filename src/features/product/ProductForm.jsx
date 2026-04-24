@@ -20,6 +20,16 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
     price: false,
     stock: false,
   });
+  //functional update touched , because touched is an object {name , price , stock}
+  //...prev takes everthing from touched , but updates only one field
+  const handleBlur = (field, value, setter) => {
+    setTouched((prev) => ({
+      ...prev,
+      [field]: true,
+    }));
+
+    setter(value.trim());
+  };
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
   const [lang] = useState("th");
@@ -42,20 +52,19 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const newErrors = validateProduct(
-      {
-        name,
-        price,
-        stock,
-      },
-      lang,
-    );
-
+    const newErrors = validateProduct({ name, price, stock }, lang);
     setErrors(newErrors);
 
-    const hasError = Object.values(newErrors).some((e) => e);
+    const hasError = Object.values(newErrors).some(Boolean);
 
-    if (hasError) return;
+    if (hasError) {
+      setTouched({
+        name: true,
+        price: true,
+        stock: true,
+      });
+      return;
+    }
 
     onSubmit({
       name: name.trim(),
@@ -110,15 +119,12 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
           setName(e.target.value);
         }}
         //onBlur = when input loses focus
-        onBlur={() => {
-          setTouched(true);
-
-          const trimmed = name.trim();
-          setName(trimmed);
-        }}
+        onBlur={() => handleBlur("name", name, setName)}
       />
 
-      {touched && errors.name && <p className="error-text">{errors.name}</p>}
+      {touched.name && errors.name && (
+        <p className="error-text">{errors.name}</p>
+      )}
 
       {/* Price */}
       <div className="input-group">
@@ -127,10 +133,13 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
           placeholder={L.price}
           value={price}
           onChange={(e) => setPrice(e.target.value)}
+          onBlur={() => handleBlur("price", price, setPrice)}
         />
         <span>{L.currency}</span>
       </div>
-      {touched && errors.price && <p className="error-text">{errors.price}</p>}
+      {touched.price && errors.price && (
+        <p className="error-text">{errors.price}</p>
+      )}
 
       {/* Stock */}
       <div className="input-group">
@@ -139,10 +148,13 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
           placeholder={L.stock}
           value={stock}
           onChange={(e) => setStock(e.target.value)}
+          onBlur={() => handleBlur("stock", stock, setStock)}
         />
         <span>{L.piece}</span>
       </div>
-      {touched && errors.stock && <p className="error-text">{errors.stock}</p>}
+      {touched.stock && errors.stock && (
+        <p className="error-text">{errors.stock}</p>
+      )}
 
       {/* Submit */}
       <button className="btn-add" type="submit">

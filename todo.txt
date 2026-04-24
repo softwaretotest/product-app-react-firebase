@@ -1,0 +1,3 @@
+when use ./pages/dashborad.jsx
+simplify LANG im port as variable L , ready to use. 
+no useState for th - ch switch , use .env eg.  LANG="th" , how to use env 
