@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import {
   getProducts,
   addProduct,
@@ -6,7 +6,9 @@ import {
   updateProduct,
 } from "./services/productService";
 import "./styles/app.css";
-import { compressImage } from "./utils/image";
+import Modal from "./components/Modal";
+import ProductList from "./components/ProductList";
+import ProductForm from "./components/ProductForm";
 import { LANG } from "./i18n";
 
 function App() {
@@ -15,10 +17,10 @@ function App() {
   const [editing, setEditing] = useState(null);
   const [highlightId, setHighlightId] = useState(null);
   const [actionType, setActionType] = useState(null);
-  const [lang] = useState("th");
   const [loadingId, setLoadingId] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
+  const [lang] = useState("th");
   const L = LANG[lang];
 
   const formatCurrency = (value, lang) => {
@@ -145,17 +147,26 @@ function App() {
       )}
       {/* FORM */}
       <div className="form-container">
-        <ShowForm
-          showAddForm={showAddForm}
-          editing={editing}
-          onClose={() => {
-            setShowAddForm(false);
-            setEditing(null);
-          }}
-          onSubmit={editing ? handleEdit : handleAdd}
-          lang={lang}
-          setPreview={setPreview}
-        />
+        {(showAddForm || editing) && (
+          <Modal
+            onClose={() => {
+              setShowAddForm(false);
+              setEditing(null);
+            }}
+          >
+            <ProductForm
+              key={editing?.id || "new"}
+              initialData={editing}
+              onSubmit={editing ? handleEdit : handleAdd}
+              onCancel={() => {
+                setShowAddForm(false);
+                setEditing(null);
+              }}
+              setPreview={setPreview}
+            />
+          </Modal>
+        )}
+
         <button className="btn-add" onClick={() => setShowAddForm(true)}>
           {L.add_product}
         </button>
@@ -166,7 +177,6 @@ function App() {
         products={products}
         highlightId={highlightId}
         actionType={actionType}
-        preview={preview}
         setPreview={setPreview}
         formatCurrency={formatCurrency}
         lang={lang}
@@ -175,262 +185,6 @@ function App() {
         onDelete={handleDelete}
       />
     </div>
-  );
-}
-
-//////////////////////////////////////////////////////////
-// SHOW FORM
-//////////////////////////////////////////////////////////
-function ShowForm({
-  showAddForm,
-  editing,
-  onClose,
-  onSubmit,
-  lang,
-  setPreview,
-}) {
-  if (!showAddForm && !editing) return null;
-
-  return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <ProductForm
-          key={editing?.id || "new"}
-          initialData={editing}
-          onSubmit={onSubmit}
-          onCancel={onClose}
-          lang={lang}
-          setPreview={setPreview}
-        />
-      </div>
-    </div>
-  );
-}
-
-//////////////////////////////////////////////////////////
-// PRODUCT LIST
-//////////////////////////////////////////////////////////
-function ProductList({
-  products,
-  highlightId,
-  actionType,
-  setPreview,
-  formatCurrency,
-  lang,
-  loadingId,
-  onEdit,
-  onDelete,
-}) {
-  const L = LANG[lang];
-
-  return (
-    <div className="list-container">
-      {products.map((p) => (
-        <ProductCard
-          key={p.id}
-          p={p}
-          highlightId={highlightId}
-          actionType={actionType}
-          setPreview={setPreview}
-          formatCurrency={formatCurrency}
-          lang={lang}
-          loadingId={loadingId}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          L={L}
-        />
-      ))}
-    </div>
-  );
-}
-
-//////////////////////////////////////////////////////////
-// PRODUCT CARD
-//////////////////////////////////////////////////////////
-function ProductCard({
-  p,
-  highlightId,
-  actionType,
-  setPreview,
-  formatCurrency,
-  lang,
-  loadingId,
-  onEdit,
-  onDelete,
-  L,
-}) {
-  return (
-    <div
-      className={`card ${p.id === highlightId ? "highlight" : ""}`}
-      id={p.id}
-    >
-      {p.id === highlightId && (
-        <span className="badge-new">
-          {actionType === "edit" ? L.update : L.new}
-        </span>
-      )}
-
-      {p.image && (
-        <img
-          src={p.image}
-          alt={p.name}
-          style={{
-            width: "100px",
-            height: "100px",
-            objectFit: "cover",
-            cursor: "pointer",
-          }}
-          onClick={() => setPreview(p.image)}
-        />
-      )}
-
-      <h3>{p.name}</h3>
-      <p>
-        {L.price}: {formatCurrency(p.price, lang)} {L.currency}
-      </p>
-      <p>
-        {L.stock}: {p.stock} {L.piece}
-      </p>
-
-      <button className="btn-edit" onClick={() => onEdit(p)}>
-        {L.edit}
-      </button>
-
-      <button
-        disabled={loadingId === p.id}
-        className="btn-delete"
-        onClick={() => onDelete(p.id, p.name)}
-      >
-        {loadingId === p.id ? "..." : L.delete}
-      </button>
-    </div>
-  );
-}
-
-//////////////////////////////////////////////////////////
-// PRODUCT FORM (เหมือนเดิม + clean นิดเดียว)
-//////////////////////////////////////////////////////////
-function ProductForm({
-  initialData: isEdit,
-  onSubmit,
-  onCancel,
-  lang,
-  setPreview,
-}) {
-  const [name, setName] = useState(isEdit?.name || "");
-  const [price, setPrice] = useState(isEdit?.price || "");
-  const [stock, setStock] = useState(isEdit?.stock || "");
-  const [image, setImage] = useState(isEdit?.image || "");
-  const [error, setError] = useState("");
-
-  const fileInputRef = useRef(null);
-  const L = LANG[lang];
-
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const compressed = await compressImage(file, 200);
-    setImage(compressed);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const trimmed = name.trim();
-    if (!trimmed) {
-      setError(L.error_text);
-      return;
-    }
-
-    setError("");
-
-    onSubmit({
-      name: trimmed,
-      price: Number(price),
-      stock: Number(stock),
-      image,
-    });
-  };
-
-  return (
-    <form className={isEdit ? "form-edit" : "form-add"} onSubmit={handleSubmit}>
-      <h2>{isEdit ? L.edit : L.add_product}</h2>
-
-      {/* ✅ IMAGE UPLOAD */}
-      <div className="input-group">
-        <span>{L.upload_image}</span>
-        {/* upload image box */}
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef}
-          onChange={handleImageChange}
-        />
-        {/* little image */}
-        {image && (
-          <img
-            src={image}
-            alt="preview"
-            style={{
-              width: "60px",
-              height: "60px",
-              objectFit: "cover",
-              marginLeft: "8px",
-              borderRadius: "6px",
-              cursor: "pointer",
-            }}
-            onClick={() => setPreview(image)}
-          />
-        )}
-      </div>
-
-      {/* NAME */}
-      <input
-        className={error ? "input-error" : ""}
-        placeholder={L.name}
-        value={name}
-        onChange={(e) => {
-          setName(e.target.value);
-          if (error) setError("");
-        }}
-        onBlur={() => {
-          const trimmed = name.trim();
-          setName(trimmed);
-          if (!trimmed) setError(L.error_text);
-        }}
-      />
-
-      {error && <p className="error-text">{error}</p>}
-
-      {/* PRICE */}
-      <div className="input-group">
-        <input
-          placeholder={L.price}
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-        <span>{L.currency}</span>
-      </div>
-
-      {/* STOCK */}
-      <div className="input-group">
-        <input
-          placeholder={L.stock}
-          value={stock}
-          onChange={(e) => setStock(e.target.value)}
-        />
-        <span>{L.piece}</span>
-      </div>
-
-      <button className="btn-add" type="submit">
-        {isEdit ? L.save : L.add_product}
-      </button>
-
-      <button className="btn-cancel" type="button" onClick={onCancel}>
-        {L.cancel}
-      </button>
-    </form>
   );
 }
 
