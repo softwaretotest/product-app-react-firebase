@@ -1,4 +1,4 @@
-import { LANG } from "../i18n"; // (ให้ path ถูกด้วย)
+import { LANG } from "@/i18n"; // (ให้ path ถูกด้วย)
 // Validate product name
 export function validateName(name, lang) {
   const L = LANG[lang];

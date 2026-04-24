@@ -1,4 +1,4 @@
-import { LANG } from "../i18n";
+import { LANG } from "@/i18n";
 // Display single product card
 function ProductCard({
   product,

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { compressImage } from "../utils/image";
-import { validateProduct } from "../validators/product.validator";
-import { LANG } from "../i18n";
+import { compressImage } from "@/utils/image";
+import { validateProduct } from "@/validators/product.validator";
+import { LANG } from "@/i18n";
 
 // Product form for create and edit
 function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
