@@ -256,3 +256,21 @@ button:hover {
   width: 90%;
   max-width: 400px;
 }
+
+/* Product */
+.img-product {
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.img-product--card {
+  width: 100px;
+  height: 100px;
+}
+
+.img-product--form {
+  width: 60px;
+  height: 60px;
+  margin-left: 8px;
+  cursor: pointer;
+}

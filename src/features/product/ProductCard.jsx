@@ -26,12 +26,7 @@ function ProductCard({
         <img
           src={product.image}
           alt={product.name}
-          style={{
-            width: "100px",
-            height: "100px",
-            objectFit: "cover",
-            cursor: "pointer",
-          }}
+          className="img-product img-product--card"
           onClick={() => setPreview(product.image)}
         />
       )}
