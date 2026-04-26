@@ -110,7 +110,7 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
 
       {/* Name */}
       <div className="input-group">
-        <span>{L.name}</span>
+        <span>{L.product_name}</span>
         <input
           ref={inputRef}
           className={`input ${touched.name && errors.name ? "input-error" : ""}`}
