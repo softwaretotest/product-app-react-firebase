@@ -49,9 +49,9 @@ function validateLang(base, target, langName) {
   });
 }
 
-// case LANG.en
+// Make currency readable for no Thai people
 export function getCurrencyLabel() {
-  if (false === ["th", "de"].includes(appLang)) {
+  if (false === ["th"].includes(appLang)) {
     return BaseLang === "th" ? "THB" : "CHF";
   }
   return LANG[BaseLang].currency;
