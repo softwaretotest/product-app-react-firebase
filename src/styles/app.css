@@ -1,3 +1,10 @@
+/* =========================
+   GLOBAL / RESET
+========================= */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -5,12 +12,39 @@ body {
   color: #111;
 }
 
+/* =========================
+   LAYOUT
+========================= */
 .container {
   max-width: 600px;
   margin: auto;
   padding: 2px;
 }
 
+.header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.form-container {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+  padding: 2px;
+  border-bottom: 1px solid #ccc;
+}
+
+.list-container {
+  min-height: calc(100vh - 180px);
+  overflow-y: auto;
+  padding-top: 10px;
+}
+
+/* =========================
+   TYPOGRAPHY
+========================= */
 h1 {
   font-size: 1.2em;
   text-decoration: underline;
@@ -22,12 +56,9 @@ h2 {
   font-size: 1em;
 }
 
-.header {
-  position: relative;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
+/* =========================
+   HEADER UTILITIES
+========================= */
 .lang-switch {
   position: absolute;
   top: 0;
@@ -41,13 +72,33 @@ h2 {
   top: 0;
   right: 0;
 }
-/* form */
+
+/* =========================
+   FORM
+========================= */
 form {
   background: #ffffff;
   padding: 16px;
   border-radius: 10px;
   margin-bottom: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.form-add {
+  background: #38c9a9;
+}
+
+.form-edit {
+  background: #537fd7;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+}
+
+.input-group span {
+  margin-left: 8px;
 }
 
 input {
@@ -65,7 +116,24 @@ input::placeholder {
   opacity: 1;
 }
 
-/* product card */
+/* =========================
+   FORM VALIDATION
+========================= */
+.input-error {
+  border: 8px solid red;
+}
+
+.error-text {
+  color: rgb(129, 17, 17);
+  font-weight: bold;
+  font-size: 15px;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+/* =========================
+   PRODUCT CARD
+========================= */
 .card {
   position: relative;
   background: white;
@@ -73,7 +141,8 @@ input::placeholder {
   border-radius: 10px;
   margin-bottom: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  /* form + padding + safe zone , to solve form on card wenn auto scroll */
+
+  /* helps scroll positioning when editing */
   scroll-margin-top: 120px;
   scroll-margin-bottom: 80px;
 }
@@ -87,7 +156,29 @@ input::placeholder {
   color: #555;
 }
 
-/* buttons */
+/* =========================
+   PRODUCT IMAGE
+========================= */
+.img-product {
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.img-product--card {
+  width: 100px;
+  height: 100px;
+}
+
+.img-product--form {
+  width: 60px;
+  height: 60px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+/* =========================
+   BUTTONS
+========================= */
 button {
   border: none;
   padding: 6px 10px;
@@ -125,36 +216,9 @@ button:hover {
   color: white;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-}
-
-.form-add {
-  background: #38c9a9;
-}
-
-.form-edit {
-  background: #537fd7;
-}
-
-.input-group span {
-  margin-left: 8px;
-}
-
-.form-container {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: white; /* หรือ dark mode ของคุณ */
-  padding: 2px;
-  border-bottom: 1px solid #ccc;
-}
-
+/* =========================
+   BADGES / HIGHLIGHT
+========================= */
 .badge-new {
   border-radius: 6px;
   font-weight: bold;
@@ -168,16 +232,16 @@ button:hover {
   animation: blink 1s infinite;
 }
 
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
 .highlight {
   animation:
     glowPulse 1s ease-in-out infinite alternate,
     zoomIn 0.4s ease;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes glowPulse {
@@ -198,24 +262,9 @@ button:hover {
   }
 }
 
-.input-error {
-  border: 8px solid red;
-}
-
-.error-text {
-  color: rgb(129, 17, 17);
-  font-weight: bold;
-  font-size: 15px;
-  margin-top: -8px;
-  margin-bottom: 8px;
-}
-
-.list-container {
-  min-height: calc(100vh - 180px); /* ปรับตามความสูง form */
-  overflow-y: auto;
-  padding-top: 10px;
-}
-
+/* =========================
+   PREVIEW MODAL
+========================= */
 .preview-overlay {
   position: fixed;
   inset: 0;
@@ -223,7 +272,7 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99999; /* สูงกว่า sticky */
+  z-index: 99999;
 }
 
 .preview-overlay img {
@@ -242,6 +291,9 @@ button:hover {
   cursor: pointer;
 }
 
+/* =========================
+   MODAL
+========================= */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -255,22 +307,4 @@ button:hover {
 .modal-content {
   width: 90%;
   max-width: 400px;
-}
-
-/* Product */
-.img-product {
-  object-fit: cover;
-  border-radius: 6px;
-}
-
-.img-product--card {
-  width: 100px;
-  height: 100px;
-}
-
-.img-product--form {
-  width: 60px;
-  height: 60px;
-  margin-left: 8px;
-  cursor: pointer;
 }
