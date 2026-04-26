@@ -1,7 +1,7 @@
 learn Tailwind and use it to improve css e.g. Add- Edit-Form
 to use ./pages/dashborad.jsx
 no useState for th - ch switch , use .env eg.  LANG="th" , how to use env 
-save BaseLang in DB + Login
+save BaseLang + Currency for Price in DB + Login
 ----------------------------------------------------
 คำแนะนำจาก ChatGPT
 2) Store / Shop / Settings แยก currency ออกไป

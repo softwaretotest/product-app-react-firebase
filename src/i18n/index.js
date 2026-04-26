@@ -1,15 +1,30 @@
 import { LANG, BaseLang } from "./lang";
 
-// case LANG.en
-export function getCurrencyLabel() {
-  const userLang = getUserLang();
+// --- normalize ---
+const normalizeLang = (locale) => {
+  if (!locale) return BaseLang;
+  return locale.toLowerCase().split("-")[0];
+};
 
-  if (userLang === "en") {
-    return BaseLang === "th" ? "THB" : "CHF";
+// --- detect lang en de th ---
+export const getUserLang = () => {
+  const dbLang = window.__USER_LANG__;
+  const browserLang = navigator.language;
+
+  const detected = normalizeLang(dbLang || browserLang);
+
+  // ✅ รองรับเฉพาะภาษาที่มี
+  const supported = ["th", "de", "en"];
+
+  if (supported.includes(detected)) {
+    return detected;
   }
 
-  return LANG[BaseLang].currency;
-}
+  // 👉 fallback
+  return "en";
+};
+
+const appLang = getUserLang();
 
 // --- validate ---
 function validateLang(base, target, langName) {
@@ -34,6 +49,14 @@ function validateLang(base, target, langName) {
   });
 }
 
+// case LANG.en
+export function getCurrencyLabel() {
+  if (false === ["th", "de"].includes(appLang)) {
+    return BaseLang === "th" ? "THB" : "CHF";
+  }
+  return LANG[BaseLang].currency;
+}
+
 // validate lang.js
 if (import.meta.env.DEV) {
   const base = LANG[BaseLang];
@@ -41,25 +64,6 @@ if (import.meta.env.DEV) {
     validateLang(base, lang, langName);
   });
 }
-
-// --- normalize ---
-const normalizeLang = (locale) => {
-  if (!locale) return BaseLang;
-  return locale.toLowerCase().split("-")[0];
-};
-
-// --- detect lang en de th ---
-export const getUserLang = () => {
-  const dbLang = window.__USER_LANG__;
-  const browserLang = navigator.language;
-
-  const detected = normalizeLang(dbLang || browserLang);
-
-  // ✅ fallback if no LANG
-  return LANG[detected] ? detected : BaseLang;
-};
-
-const appLang = getUserLang();
 
 // --- translator ---
 export const L = new Proxy(LANG[appLang], {
