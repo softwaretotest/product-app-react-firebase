@@ -8,7 +8,7 @@ import {
 import { ProductList, ProductForm } from "@/features/product";
 import Modal from "@/components/Modal";
 import "@/styles/app.css";
-import { LANG } from "@/i18n";
+import { L, formatCurrency } from "@/i18n";
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -18,16 +18,6 @@ function App() {
   const [actionType, setActionType] = useState(null);
   const [loadingId, setLoadingId] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
-
-  const [lang] = useState("th");
-  const L = LANG[lang];
-
-  const formatCurrency = (value, lang) => {
-    return new Intl.NumberFormat(lang === "th" ? "th-TH" : "de-CH", {
-      style: "currency",
-      currency: lang === "th" ? "THB" : "CHF",
-    }).format(value);
-  };
 
   const loadProducts = async () => {
     const list = await getProducts();
@@ -178,7 +168,6 @@ function App() {
         actionType={actionType}
         setPreview={setPreview}
         formatCurrency={formatCurrency}
-        lang={lang}
         loadingId={loadingId}
         onEdit={setEditing}
         onDelete={handleDelete}

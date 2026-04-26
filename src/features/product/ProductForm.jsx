@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { compressImage } from "@/utils/image";
 import { validateProduct } from "@/validators/product.validator";
-import { LANG } from "@/i18n";
+import { L, getCurrencyLabel } from "@/i18n";
 
 // Product form for create and edit
 function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
@@ -32,8 +32,7 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
   };
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
-  const [lang] = useState("th");
-  const L = LANG[lang];
+
   // Auto focus on first input when form opens
   useEffect(() => {
     inputRef.current?.focus();
@@ -52,7 +51,7 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const newErrors = validateProduct({ name, price, stock }, lang);
+    const newErrors = validateProduct({ name, price, stock }, L);
     setErrors(newErrors);
 
     const hasError = Object.values(newErrors).some(Boolean);
@@ -110,18 +109,20 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
       </div>
 
       {/* Name */}
-      <input
-        ref={inputRef}
-        className={`input ${touched.name && errors.name ? "input-error" : ""}`}
-        placeholder={L.name}
-        value={name}
-        onChange={(e) => {
-          setName(e.target.value);
-        }}
-        //onBlur = when input loses focus
-        onBlur={() => handleBlur("name", name, setName)}
-      />
-
+      <div className="input-group">
+        <span>{L.name}</span>
+        <input
+          ref={inputRef}
+          className={`input ${touched.name && errors.name ? "input-error" : ""}`}
+          placeholder={L.product_name}
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+          //onBlur = when input loses focus
+          onBlur={() => handleBlur("name", name, setName)}
+        />
+      </div>
       {touched.name && errors.name && (
         <p className="error-text">{errors.name}</p>
       )}
@@ -135,7 +136,7 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
           onChange={(e) => setPrice(e.target.value)}
           onBlur={() => handleBlur("price", price, setPrice)}
         />
-        <span>{L.currency}</span>
+        <span> {getCurrencyLabel()}</span>
       </div>
       {touched.price && errors.price && (
         <p className="error-text">{errors.price}</p>

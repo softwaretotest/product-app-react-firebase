@@ -1,4 +1,5 @@
-import { LANG } from "@/i18n";
+import { L, getCurrencyLabel } from "@/i18n";
+
 // Display single product card
 function ProductCard({
   product,
@@ -6,12 +7,10 @@ function ProductCard({
   actionType,
   setPreview,
   formatCurrency,
-  lang,
   loadingId,
   onEdit,
   onDelete,
 }) {
-  const L = LANG[lang];
   return (
     <div
       className={`card ${product.id === highlightId ? "highlight" : ""}`}
@@ -40,7 +39,7 @@ function ProductCard({
       <h3>{product.name}</h3>
 
       <p>
-        {L.price}: {formatCurrency(product.price, lang)} {L.currency}
+        {L.price}: {formatCurrency(product.price)} {getCurrencyLabel()}
       </p>
 
       <p>

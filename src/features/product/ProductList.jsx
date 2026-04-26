@@ -7,7 +7,6 @@ function ProductList({
   actionType,
   setPreview,
   formatCurrency,
-  lang,
   loadingId,
   onEdit,
   onDelete,
@@ -27,7 +26,6 @@ function ProductList({
           actionType={actionType}
           setPreview={setPreview}
           formatCurrency={formatCurrency}
-          lang={lang}
           loadingId={loadingId}
           onEdit={onEdit}
           onDelete={onDelete}

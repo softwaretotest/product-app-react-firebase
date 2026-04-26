@@ -1,3 +1,58 @@
-when use ./pages/dashborad.jsx
-simplify LANG im port as variable L , ready to use. 
+learn Tailwind and use it to improve css e.g. Add- Edit-Form
+to use ./pages/dashborad.jsx
 no useState for th - ch switch , use .env eg.  LANG="th" , how to use env 
+save BaseLang in DB + Login
+----------------------------------------------------
+คำแนะนำจาก ChatGPT
+2) Store / Shop / Settings แยก currency ออกไป
+shop = {
+  id: 1,
+  name: "My Shop",
+  currency: "USD"
+}
+
+หรือจะใช้แบบ settings:
+
+settings = {
+  currency: "USD",
+  locale: "en-US"
+}
+
+แค่เปลี่ยนจากนี้
+currency = "THB";
+👉 เป็นแบบนี้
+store.currency = "THB";
+💡 ทำไมแค่นี้ถึงสำคัญ
+
+เพราะวันนึง (ถ้าคุณไปถึงจริง)
+
+คุณจะเปลี่ยนจาก:
+
+currency = DEFAULT_BY_LANG[lang];
+
+👉 เป็น:
+
+currency = store.currency;
+
+---------------------------------
+store.currency = "THB"; store จะเป็นอย่างไง
+
+ตัวอย่างที่ง่ายที่สุด (แบบคุณใช้ได้ทันที)
+const store = {
+  lang: "th",
+  currency: "THB",
+  name: "My Shop",
+};
+🔧 แล้วมันถูกใช้ยังไง?
+ตอนแสดงราคา
+const L = LANG[store.lang];
+
+`${L.price}: ${amount.toFixed(2)} ${L.currency}`
+🧠 concept จริงของมัน
+
+คิดแบบนี้:
+
+สิ่ง	หน้าที่
+LANG	UI text (ราคา, บันทึก, ลบ)
+store	business setting (currency, lang, shop config)
+
