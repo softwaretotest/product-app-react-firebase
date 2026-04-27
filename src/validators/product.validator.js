@@ -11,7 +11,8 @@ export function validateName(name) {
 export function validateAmount(amount) {
   const value = Number(amount);
 
-  if (!amount) {
+  // if (!amount) {  // cannot check like this , becaus amount=0 is valid
+  if (amount === "" || amount === null || amount === undefined) {
     return L.insert_data;
   }
 

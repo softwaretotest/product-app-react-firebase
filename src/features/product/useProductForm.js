@@ -4,10 +4,10 @@ import { validateProduct } from "@/validators/product.validator";
 import { L } from "@/i18n";
 export function useProductForm(initialData, onSubmit) {
   const [form, setForm] = useState({
-    name: initialData?.name || "",
-    price: initialData?.price || "",
-    stock: initialData?.stock || "",
-    image: initialData?.image || "",
+    name: initialData?.name ?? "",
+    price: initialData?.price ?? "",
+    stock: initialData?.stock ?? "",
+    image: initialData?.image ?? "",
   });
 
   const [errors, setErrors] = useState({});
@@ -22,7 +22,9 @@ export function useProductForm(initialData, onSubmit) {
 
   const handleBlur = (field) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
-    updateField(field, form[field].trim());
+    // trim string only eg. name , not price, amount
+    const value = form[field];
+    updateField(field, typeof value === "string" ? value.trim() : value);
   };
 
   const submit = () => {
@@ -55,6 +57,5 @@ export function useProductForm(initialData, onSubmit) {
     updateField,
     handleBlur,
     submit,
-    setForm,
   };
 }

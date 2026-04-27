@@ -13,7 +13,7 @@ function ProductForm({
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
 
-  const { form, isDirty, errors, touched, updateField, handleBlur, submit } =
+  const { form, errors, touched, isDirty, updateField, handleBlur, submit } =
     useProductForm(initialData, onSubmit);
 
   const handleImageChange = async (event) => {
@@ -88,7 +88,7 @@ function ProductForm({
             touched.price && errors.price ? "input-error" : ""
           }`}
           placeholder={L.price}
-          value={form.price}
+          value={form.price ?? ""}
           onChange={(e) => updateField("price", e.target.value)}
           onBlur={() => handleBlur("price")}
         />
@@ -105,7 +105,7 @@ function ProductForm({
             touched.stock && errors.stock ? "input-error" : ""
           }`}
           placeholder={L.stock}
-          value={form.stock}
+          value={form.stock ?? ""}
           onChange={(e) => updateField("stock", e.target.value)}
           onBlur={() => handleBlur("stock")}
         />

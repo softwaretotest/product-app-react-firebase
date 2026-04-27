@@ -5,7 +5,7 @@ function Modal({ children, onClose }) {
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === "Escape") {
-        onClose(); // ✅ ใช้ตัวนี้
+        onClose();
       }
     };
 
