@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { validateProduct } from "@/validators/product.validator";
 import { L } from "@/i18n";
-
 export function useProductForm(initialData, onSubmit) {
   const [form, setForm] = useState({
     name: initialData?.name || "",
@@ -14,8 +13,11 @@ export function useProductForm(initialData, onSubmit) {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
+  const [isDirty, setIsDirty] = useState(false);
+
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+    setIsDirty(true);
   };
 
   const handleBlur = (field) => {
@@ -24,7 +26,7 @@ export function useProductForm(initialData, onSubmit) {
   };
 
   const submit = () => {
-    const newErrors = validateProduct(form, L);
+    const newErrors = validateProduct(form);
     setErrors(newErrors);
 
     if (Object.values(newErrors).some(Boolean)) {
@@ -49,6 +51,7 @@ export function useProductForm(initialData, onSubmit) {
     form,
     errors,
     touched,
+    isDirty,
     updateField,
     handleBlur,
     submit,

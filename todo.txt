@@ -56,3 +56,15 @@ const L = LANG[store.lang];
 LANG	UI text (ราคา, บันทึก, ลบ)
 store	business setting (currency, lang, shop config)
 
+----------------------------------------
+----------------------------------------
+Draft autosave (เพิ่มอีกนิด แต่ impact สูงมาก) กัน Form Data disappear during editing
+
+เก็บฟอร์มไว้ก่อน reload:
+
+// save
+localStorage.setItem("productFormDraft", JSON.stringify(form));
+
+// load ตอน mount
+const draft = localStorage.getItem("productFormDraft");
+if (draft) setForm(JSON.parse(draft));

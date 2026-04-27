@@ -25,6 +25,8 @@ function App() {
     setProducts(list);
   };
 
+  const [isDirty, setIsDirty] = useState(false);
+
   useEffect(() => {
     loadProducts();
   }, []);
@@ -92,6 +94,7 @@ function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setActionType("add");
     setHighlightId(docId);
+    setIsDirty(false);
   };
 
   const handleEdit = async (data) => {
@@ -108,6 +111,7 @@ function App() {
     setActionType("edit");
     setHighlightId(id);
     setEditing(null); // close modal
+    setIsDirty(false);
 
     // ❌ no scroll
   };
@@ -130,7 +134,6 @@ function App() {
           <button className="preview-close" onClick={() => setPreview(null)}>
             ✕
           </button>
-
           <img src={preview} alt="preview" />
         </div>
       )}
@@ -139,8 +142,13 @@ function App() {
         {(showAddForm || editing) && (
           <Modal
             onClose={() => {
+              if (isDirty) {
+                const ok = window.confirm(L.warn_leaving);
+                if (!ok) return;
+              }
               setShowAddForm(false);
               setEditing(null);
+              setIsDirty(false);
             }}
           >
             <ProductForm
@@ -148,10 +156,17 @@ function App() {
               initialData={editing}
               onSubmit={editing ? handleEdit : handleAdd}
               onCancel={() => {
+                if (isDirty) {
+                  const ok = window.confirm(L.warn_leaving);
+                  if (!ok) return;
+                }
+
                 setShowAddForm(false);
                 setEditing(null);
+                setIsDirty(false); // reset
               }}
               setPreview={setPreview}
+              onDirtyChange={setIsDirty}
             />
           </Modal>
         )}

@@ -3,16 +3,18 @@ import { compressImage } from "@/utils/image";
 import { useProductForm } from "./useProductForm";
 import { L, getCurrencyLabel } from "@/i18n";
 
-function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
+function ProductForm({
+  initialData,
+  onSubmit,
+  onCancel,
+  setPreview,
+  onDirtyChange,
+}) {
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
 
-  const { form, errors, touched, updateField, handleBlur, submit } =
-    useProductForm(initialData, L, onSubmit);
-
-  useEffect(() => {
-    inputRef.current?.focus();
-  }, []);
+  const { form, isDirty, errors, touched, updateField, handleBlur, submit } =
+    useProductForm(initialData, onSubmit);
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
@@ -26,6 +28,14 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
     e.preventDefault();
     submit();
   };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty); //if there is onDirtyChange, then call isDirty , else no error
+  }, [isDirty, onDirtyChange]);
 
   return (
     <form
@@ -55,7 +65,7 @@ function ProductForm({ initialData, onSubmit, onCancel, setPreview }) {
 
       {/* Name */}
       <div className="input-group">
-        <span>{L.product_name}</span>
+        <span>{L.name}</span>
         <input
           ref={inputRef}
           className={`input ${

@@ -1,8 +1,6 @@
-import { L } from "@/i18n"; // (ให้ path ถูกด้วย)
-// Validate product name
-export function validateName(name) {
-  // const L = getLang(currentLang);
+import { L } from "@/i18n";
 
+export function validateName(name) {
   if (!name || name.trim() === "") {
     return L.insert_data;
   }
