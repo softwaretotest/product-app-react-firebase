@@ -170,11 +170,14 @@ function App() {
             />
           </Modal>
         )}
-
         <button className="btn-add" onClick={() => setShowAddForm(true)}>
           {L.add_product}
         </button>
       </div>
+
+      <span>
+        {L.product} {products.length} {L.assort}
+      </span>
 
       {/* LIST */}
       <ProductList

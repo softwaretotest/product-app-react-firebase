@@ -4,7 +4,7 @@ export const LANG = {
   th: {
     key: "th",
     add_product: "เพิ่ม สินค้าตัวใหม่",
-    all_product: "ชนิด",
+    assort: "ชนิด",
     cancel: "ยกเลิก",
     currency: "บาท",
     delete: "ลบ",
@@ -27,7 +27,7 @@ export const LANG = {
   de: {
     key: "de",
     add_product: "neu hinzufügen",
-    all_product: "Sortiment(en)",
+    assort: "Sortiment(en)",
     cancel: "abbrechen",
     currency: "Franken",
     delete: "löschen",
@@ -50,7 +50,7 @@ export const LANG = {
   en: {
     key: "en",
     add_product: "add product",
-    all_product: "assortment(s)",
+    assort: "assortment(s)",
     cancel: "cancel",
     currency: "THB or CHF",
     delete: "delete",
