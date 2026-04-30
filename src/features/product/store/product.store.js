@@ -5,7 +5,7 @@ import {
   addProduct,
   updateProduct,
   deleteProduct,
-} from "./product.service";
+} from "@/features/product/services/product.service.js";
 
 // set is a function tell Zustand to update state
 export const useProductStore = create((set) => ({

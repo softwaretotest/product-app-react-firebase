@@ -13,7 +13,7 @@ export const getUserLang = () => {
 
   const detected = normalizeLang(dbLang || browserLang);
 
-  // ✅ รองรับเฉพาะภาษาที่มี
+  // support specific language
   const supported = ["th", "de", "en"];
 
   if (supported.includes(detected)) {

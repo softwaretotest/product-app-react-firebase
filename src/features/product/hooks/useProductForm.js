@@ -1,8 +1,7 @@
-// useProductForm.js
 import { useState } from "react";
 import { validateProduct } from "@/validators/product.validator";
 import { L } from "@/i18n";
-export function useProductForm(initialData, onSubmit) {
+function useProductForm(initialData, onSubmit) {
   const [form, setForm] = useState({
     name: initialData?.name ?? "",
     price: initialData?.price ?? "",
@@ -59,3 +58,4 @@ export function useProductForm(initialData, onSubmit) {
     submit,
   };
 }
+export default useProductForm;

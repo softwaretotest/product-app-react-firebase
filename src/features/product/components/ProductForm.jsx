@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { compressImage } from "@/utils/image";
-import { useProductForm } from "./useProductForm";
+import { useProductForm } from "@/features/product";
 import { L, getCurrencyLabel } from "@/i18n";
 
 function ProductForm({
@@ -15,7 +15,6 @@ function ProductForm({
 
   const { form, errors, touched, isDirty, updateField, handleBlur, submit } =
     useProductForm(initialData, onSubmit);
-
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;

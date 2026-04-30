@@ -1,6 +1,7 @@
-export { default as ProductCard } from "./ProductCard";
-export { default as ProductForm } from "./ProductForm";
-export { default as ProductList } from "./ProductList";
+export { default as ProductCard } from "./components/ProductCard";
+export { default as ProductForm } from "./components/ProductForm";
+export { default as ProductList } from "./components/ProductList";
+export { default as useProductForm } from "./hooks/useProductForm";
 
-export * from "./product.store";
-export * from "./product.service";
+export * from "./store/product.store.js";
+export * from "./services/product.service.js";

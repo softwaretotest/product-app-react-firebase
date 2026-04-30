@@ -1,4 +1,3 @@
-// ProductCard.jsx
 import { L, getCurrencyLabel } from "@/i18n";
 import { Button } from "@/components/Button";
 

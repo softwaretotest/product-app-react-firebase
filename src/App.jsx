@@ -4,11 +4,11 @@ import {
   addProduct,
   deleteProduct,
   updateProduct,
-} from "@/services/productService";
-import { ProductList, ProductForm } from "@/features/product";
+} from "@/features/product";
 import Modal from "@/components/Modal";
 import "@/styles/app.css";
 import { L, formatCurrency } from "@/i18n";
+import { ProductForm, ProductList } from "@/features/product";
 
 function App() {
   const [products, setProducts] = useState([]);

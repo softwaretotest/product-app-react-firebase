@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useProductStore } from "../features/product/product.store";
-import ProductList from "../features/product/ProductList";
-import ProductForm from "../features/product/ProductForm";
-import EmptyState from "../components/EmptyState";
+import Modal from "@/components/Modal";
+import "@/styles/app.css";
+import { ProductForm, ProductList } from "@/features/product";
 
 function Dashboard() {
   const { products, fetchProducts, add, update, remove } = useProductStore();
