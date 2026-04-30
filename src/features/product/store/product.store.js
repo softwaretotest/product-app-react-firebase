@@ -1,48 +1,41 @@
 // Global product state management
 import { create } from "zustand";
 import {
-  getProducts,
   addProduct,
   updateProduct,
   deleteProduct,
 } from "@/features/product/services/product.service.js";
 
+import useCrudStore from "@/store/crud.store.js";
+
 // set is a function tell Zustand to update state
-export const useProductStore = create((set) => ({
+export const useProductStore = create((set, get) => ({
   products: [],
   loadingId: null,
 
   // Fetch all products
   fetchProducts: async () => {
-    const list = await getProducts();
-    list.sort((a, b) => b.createdAt - a.createdAt); // latest first
-    set({ products: list });
+    const crud = useCrudStore.getState();
+    await crud.fetchItems();
+    set({
+      products: crud.items,
+    });
   },
 
   // Add product
-  // doc.data() contains all field in a product
-  // add createAt to data
   add: async (data) => {
-    const newItem = { ...data, createdAt: Date.now() };
-    const id = await addProduct(newItem);
-    // make new array of products
-    // state is the current value of store , e.g.
-    //     state = {
-    //   products: [
-    //     { id: "1", name: "A" },
-    //     { id: "2", name: "B" }
-    //   ]
-    // }
+    const crud = useCrudStore.getState();
+    const newItem = await crud.add(data);
     set((state) => ({
-      products: [{ id, ...newItem }, ...state.products], // state.products = old product list
+      products: [newItem, ...state.products],
     }));
-
-    return id;
+    return newItem.id;
   },
 
   // Update product
   update: async (id, data) => {
-    await updateProduct(id, data);
+    const crud = useCrudStore.getState();
+    await crud.update(id, data);
     set((state) => ({
       products: state.products.map((p) =>
         p.id === id ? { ...p, ...data } : p,
@@ -52,8 +45,9 @@ export const useProductStore = create((set) => ({
 
   // Delete product
   remove: async (id) => {
+    const crud = useCrudStore.getState();
     set({ loadingId: id });
-    await deleteProduct(id);
+    await crud.remove(id);
 
     set((state) => ({
       products: state.products.filter((p) => p.id !== id),
