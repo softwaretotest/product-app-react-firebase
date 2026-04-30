@@ -4,7 +4,7 @@ import {
   addProduct,
   deleteProduct,
   updateProduct,
-} from "@/features/product";
+} from "@/features/product/services/product.service";
 import Modal from "@/components/Modal";
 import "@/styles/app.css";
 import { L, formatCurrency } from "@/i18n";
