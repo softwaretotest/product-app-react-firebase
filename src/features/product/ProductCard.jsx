@@ -1,4 +1,6 @@
+// ProductCard.jsx
 import { L, getCurrencyLabel } from "@/i18n";
+import { Button } from "@/components/Button";
 
 // Display single product card
 function ProductCard({
@@ -41,17 +43,19 @@ function ProductCard({
         {L.stock}: {product.stock} {L.piece}
       </p>
 
-      <button className="btn-edit" onClick={() => onEdit(product)}>
-        {L.edit}
-      </button>
+      <Button
+        className="btn-edit"
+        children={L.edit}
+        onClick={() => onEdit(product)}
+      />
 
-      <button
+      <Button
         disabled={loadingId === product.id}
         className="btn-delete"
         onClick={() => onDelete(product.id, product.name)}
       >
         {loadingId === product.id ? "..." : L.delete}
-      </button>
+      </Button>
     </div>
   );
 }

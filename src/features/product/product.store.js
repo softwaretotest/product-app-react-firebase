@@ -20,12 +20,21 @@ export const useProductStore = create((set) => ({
   },
 
   // Add product
+  // doc.data() contains all field in a product
+  // add createAt to data
   add: async (data) => {
     const newItem = { ...data, createdAt: Date.now() };
     const id = await addProduct(newItem);
-
+    // make new array of products
+    // state is the current value of store , e.g.
+    //     state = {
+    //   products: [
+    //     { id: "1", name: "A" },
+    //     { id: "2", name: "B" }
+    //   ]
+    // }
     set((state) => ({
-      products: [{ id, ...newItem }, ...state.products],
+      products: [{ id, ...newItem }, ...state.products], // state.products = old product list
     }));
 
     return id;
@@ -34,7 +43,6 @@ export const useProductStore = create((set) => ({
   // Update product
   update: async (id, data) => {
     await updateProduct(id, data);
-
     set((state) => ({
       products: state.products.map((p) =>
         p.id === id ? { ...p, ...data } : p,

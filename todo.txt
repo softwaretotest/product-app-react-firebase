@@ -1,3 +1,7 @@
+0. แยก header กับ Button เป็น reusable components (ทำเอง) พอเรียน Tailwind แล้วมาใส่ style
+  เช่น btn-save , btn-cancel , Navdrawer etc.
+----------------------------------------------------
+1.
 learn Tailwind and use it to improve css e.g. Add- Edit-Form
 to use ./pages/dashborad.jsx
 no useState for th - ch switch , use .env eg.  LANG="th" , how to use env 

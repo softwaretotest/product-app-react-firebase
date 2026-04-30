@@ -1,12 +1,11 @@
-// Main page for product dashboard
 import { useEffect, useState } from "react";
 import { useProductStore } from "../features/product/product.store";
-import ProductCard from "../components/ProductCard";
-import ProductForm from "../components/ProductForm";
+import ProductList from "../features/product/ProductList";
+import ProductForm from "../features/product/ProductForm";
+import EmptyState from "../components/EmptyState";
 
 function Dashboard() {
-  const { products, fetchProducts, add, update, remove, loadingId } =
-    useProductStore();
+  const { products, fetchProducts, add, update, remove } = useProductStore();
 
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -15,35 +14,19 @@ function Dashboard() {
     fetchProducts();
   }, []);
 
-  // Handle add
-  const handleAdd = async (data) => {
-    await add(data);
-    setShowForm(false);
-  };
-
-  // Handle edit
-  const handleEdit = async (data) => {
-    await update(editing.id, data);
-    setEditing(null);
-  };
+  if (!products.length && !showForm) {
+    return <EmptyState onCreate={() => setShowForm(true)} />;
+  }
 
   return (
     <div>
       {showForm && (
-        <ProductForm onSubmit={handleAdd} onCancel={() => setShowForm(false)} />
+        <ProductForm onSubmit={add} onCancel={() => setShowForm(false)} />
       )}
 
       <button onClick={() => setShowForm(true)}>Add</button>
 
-      {products.map((p) => (
-        <ProductCard
-          key={p.id}
-          p={p}
-          onEdit={setEditing}
-          onDelete={remove}
-          loadingId={loadingId}
-        />
-      ))}
+      <ProductList products={products} onEdit={setEditing} onDelete={remove} />
     </div>
   );
 }
