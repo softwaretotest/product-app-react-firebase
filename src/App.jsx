@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react";
-import {
-  getProducts,
-  addProduct,
-  deleteProduct,
-  updateProduct,
-} from "@/features/product/services/product.service";
+
+import useProductStore from "@/features/product/store/product.store";
 import Modal from "@/components/Modal";
 import "@/styles/app.css";
 import { L, formatCurrency } from "@/i18n";
 import { ProductForm, ProductList } from "@/features/product";
 
 function App() {
-  const [products, setProducts] = useState([]);
+  const products = useProductStore((state) => state.products);
   const [preview, setPreview] = useState(null);
   const [editing, setEditing] = useState(null);
   const [highlightId, setHighlightId] = useState(null);
@@ -19,17 +15,13 @@ function App() {
   const [loadingId, setLoadingId] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const loadProducts = async () => {
-    const list = await getProducts();
-    list.sort((a, b) => b.createdAt - a.createdAt);
-    setProducts(list);
-  };
+  const fetchProducts = useProductStore((state) => state.fetchProducts);
 
   const [isDirty, setIsDirty] = useState(false);
 
   useEffect(() => {
-    loadProducts();
-  }, []);
+    fetchProducts();
+  }, [fetchProducts]);
 
   // preview ESC close
   useEffect(() => {
@@ -79,51 +71,44 @@ function App() {
   }, [showAddForm, editing]);
 
   // ---------- ACTIONS ----------
+  const add = useProductStore((state) => state.add);
   const handleAdd = async (data) => {
-    const newItem = {
-      ...data,
-      createdAt: Date.now(),
-    };
-
-    const docId = await addProduct(newItem);
-    await loadProducts();
+    const docId = await add(data); // ✅ call store
 
     setShowAddForm(false);
 
-    // 🔥 scroll top ONLY here
     window.scrollTo({ top: 0, behavior: "smooth" });
     setActionType("add");
     setHighlightId(docId);
     setIsDirty(false);
   };
 
+  //update → store update → UI auto. render
+  const update = useProductStore((state) => state.update);
   const handleEdit = async (data) => {
     if (!editing) return;
+
     const id = editing.id;
-    await updateProduct(id, {
+
+    await update(id, {
       ...data,
       createdAt: Date.now(),
     });
 
     setEditing(null);
-    await loadProducts();
 
     setActionType("edit");
     setHighlightId(id);
-    setEditing(null); // close modal
     setIsDirty(false);
-
-    // ❌ no scroll
   };
 
+  const remove = useProductStore((state) => state.remove);
   const handleDelete = async (id, name) => {
     if (!window.confirm(`${L.delete}? ${name}`)) return;
 
     setLoadingId(id);
-    await deleteProduct(id);
+    await remove(id);
     setLoadingId(null);
-
-    loadProducts();
   };
 
   return (

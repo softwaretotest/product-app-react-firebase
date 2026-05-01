@@ -1,54 +1,58 @@
+// crud.store.js
+
 import { create } from "zustand";
-// throw new Error("🔥 TEST: crud.store ถูกโหลด"); // Global product state management
-const useCrudStore = create((set) => ({
-  items: [],
-  loadingId: null,
+const createCrudStore = (service) => {
+  const { getItems, addItem, updateItem, deleteItem } = service;
 
-  // Fetch all items
-  fetchItems: async () => {
-    const list = await getItems();
-    list.sort((a, b) => b.createdAt - a.createdAt); // latest first
-    set({ items: list });
-  },
+  return create((set) => ({
+    items: [],
+    loadingId: null,
+    fetchItems: async () => {
+      console.log("called from CRUD.STORE - FETCHITEM()");
+      console.log("🔥 crud.store: fetchItems");
+      const list = await getItems();
+      list.sort((a, b) => b.createdAt - a.createdAt);
 
-  // Add product
-  // doc.data() contains all field in a product
-  // add createAt to data
-  add: async (data) => {
-    const newItem = { ...data, createdAt: Date.now() };
-    const id = await addItem(newItem);
-    // make new array of items
-    // state is the current value of store , e.g.
-    //     state = {
-    //   items: [
-    //     { id: "1", name: "A" },
-    //     { id: "2", name: "B" }
-    //   ]
-    // }
-    set((state) => ({
-      items: [{ id, ...newItem }, ...state.items], // state.items = old product list
-    }));
+      set({ items: list });
+    },
 
-    return id;
-  },
+    add: async (data) => {
+      console.log("🔥 crud.store: add");
 
-  // Update product
-  update: async (id, data) => {
-    await updateItem(id, data);
-    set((state) => ({
-      items: state.items.map((p) => (p.id === id ? { ...p, ...data } : p)),
-    }));
-  },
+      const newItem = { ...data, createdAt: Date.now() };
 
-  // Delete product
-  remove: async (id) => {
-    set({ loadingId: id });
-    await deleteItem(id);
+      const id = await addItem(newItem);
 
-    set((state) => ({
-      items: state.items.filter((p) => p.id !== id),
-      loadingId: null,
-    }));
-  },
-}));
-export default useCrudStore;
+      set((state) => ({
+        items: [{ id, ...newItem }, ...state.items],
+      }));
+
+      return id;
+    },
+
+    update: async (id, data) => {
+      console.log("🔥 crud.store: update");
+
+      await updateItem(id, data);
+
+      set((state) => ({
+        items: state.items.map((p) => (p.id === id ? { ...p, ...data } : p)),
+      }));
+    },
+
+    remove: async (id) => {
+      console.log("🔥 crud.store: remove");
+
+      set({ loadingId: id });
+
+      await deleteItem(id);
+
+      set((state) => ({
+        items: state.items.filter((p) => p.id !== id),
+        loadingId: null,
+      }));
+    },
+  }));
+};
+
+export default createCrudStore;
