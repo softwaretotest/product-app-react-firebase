@@ -1,5 +1,6 @@
 // Display list of products with basic states
 import ProductCard from "@/features/product/components/ProductCard";
+import { L } from "@/i18n";
 
 function ProductList({
   products,
@@ -13,7 +14,7 @@ function ProductList({
 }) {
   // Empty state
   if (!products.length) {
-    return <p className="empty-state">No products found</p>;
+    return <p className="empty-state">{L.no_product}</p>;
   }
 
   return (
