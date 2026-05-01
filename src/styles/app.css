@@ -308,3 +308,90 @@ button:hover {
   width: 90%;
   max-width: 400px;
 }
+
+/* =========================
+   NAV DRAWER
+========================= */
+
+.btn-menu {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  background: #111;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 9998;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100vh;
+  background: white;
+  z-index: 9999;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+  transition: left 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer.open {
+  left: 0;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.btn-close {
+  background: #111;
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+  background: #333;
+  transform: scale(1.05);
+}
+
+.drawer-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drawer-item {
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #f3f4f6;
+}
+
+.drawer-item:hover {
+  background: #e5e7eb;
+}

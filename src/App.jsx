@@ -1,7 +1,7 @@
-import ProductPage from "@/pages/ProductPage";
+import NavDrawer from "@/components/NavDrawer";
 
 function App() {
-  return <ProductPage />;
+  return <NavDrawer />;
 }
 
 export default App;
