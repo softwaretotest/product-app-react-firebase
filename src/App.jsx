@@ -12,10 +12,10 @@ function App() {
   const [editing, setEditing] = useState(null);
   const [highlightId, setHighlightId] = useState(null);
   const [actionType, setActionType] = useState(null);
-  const [loadingId, setLoadingId] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
   const fetchProducts = useProductStore((state) => state.fetchProducts);
+  const loadingId = useProductStore((state) => state.loadingId);
 
   const [isDirty, setIsDirty] = useState(false);
 
@@ -46,9 +46,7 @@ function App() {
         });
       }
     }, 200);
-
     const clear = setTimeout(() => setHighlightId(null), 10000);
-
     return () => clearTimeout(clear);
   }, [highlightId]);
 
@@ -74,9 +72,7 @@ function App() {
   const add = useProductStore((state) => state.add);
   const handleAdd = async (data) => {
     const docId = await add(data); // ✅ call store
-
     setShowAddForm(false);
-
     window.scrollTo({ top: 0, behavior: "smooth" });
     setActionType("add");
     setHighlightId(docId);
@@ -94,9 +90,7 @@ function App() {
       ...data,
       createdAt: Date.now(),
     });
-
     setEditing(null);
-
     setActionType("edit");
     setHighlightId(id);
     setIsDirty(false);
@@ -105,10 +99,7 @@ function App() {
   const remove = useProductStore((state) => state.remove);
   const handleDelete = async (id, name) => {
     if (!window.confirm(`${L.delete}? ${name}`)) return;
-
-    setLoadingId(id);
     await remove(id);
-    setLoadingId(null);
   };
 
   return (
