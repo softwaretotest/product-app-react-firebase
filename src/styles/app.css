@@ -1,6 +1,8 @@
 /* =========================
    GLOBAL / RESET
-========================= */
+   ========================= */
+
+/* Ensure consistent box sizing across all elements */
 * {
   box-sizing: border-box;
 }
@@ -13,29 +15,49 @@ body {
 }
 
 /* =========================
+   Z-INDEX SYSTEM (UI LAYERING)
+   ========================= */
+
+:root {
+  /* Global stacking system for predictable UI layering
+     Higher values appear above lower values */
+
+  --z-base: 1; /* Default UI elements (buttons, icons) */
+  --z-content: 10; /* Main page content */
+  --z-overlay: 90; /* Background dim layer (drawer/modal backdrop) */
+  --z-drawer: 100; /* Side navigation drawer */
+  --z-modal: 200; /* Highest priority UI (image preview, dialogs) */
+}
+
+/* =========================
    LAYOUT
-========================= */
+   ========================= */
+
+/* Main container for centering app content */
 .container {
   max-width: 600px;
   margin: auto;
   padding: 2px;
 }
 
+/* Header wrapper (can hold title + utilities) */
 .header {
   position: relative;
   text-align: center;
   margin-bottom: 10px;
 }
 
+/* Sticky form area (stays visible during scroll) */
 .form-container {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: var(--z-content);
   background: white;
   padding: 2px;
   border-bottom: 1px solid #ccc;
 }
 
+/* Scrollable list container */
 .list-container {
   min-height: calc(100vh - 180px);
   overflow-y: auto;
@@ -44,7 +66,8 @@ body {
 
 /* =========================
    TYPOGRAPHY
-========================= */
+   ========================= */
+
 h1 {
   font-size: 1.2em;
   text-decoration: underline;
@@ -58,7 +81,8 @@ h2 {
 
 /* =========================
    HEADER UTILITIES
-========================= */
+   ========================= */
+
 .lang-switch {
   position: absolute;
   top: 0;
@@ -75,7 +99,8 @@ h2 {
 
 /* =========================
    FORM
-========================= */
+   ========================= */
+
 form {
   background: #ffffff;
   padding: 16px;
@@ -118,7 +143,8 @@ input::placeholder {
 
 /* =========================
    FORM VALIDATION
-========================= */
+   ========================= */
+
 .input-error {
   border: 8px solid red;
 }
@@ -133,7 +159,8 @@ input::placeholder {
 
 /* =========================
    PRODUCT CARD
-========================= */
+   ========================= */
+
 .card {
   position: relative;
   background: white;
@@ -142,7 +169,7 @@ input::placeholder {
   margin-bottom: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 
-  /* helps scroll positioning when editing */
+  /* Ensures correct scroll positioning when navigating to item */
   scroll-margin-top: 120px;
   scroll-margin-bottom: 80px;
 }
@@ -158,7 +185,8 @@ input::placeholder {
 
 /* =========================
    PRODUCT IMAGE
-========================= */
+   ========================= */
+
 .img-product {
   object-fit: cover;
   border-radius: 6px;
@@ -178,7 +206,8 @@ input::placeholder {
 
 /* =========================
    BUTTONS
-========================= */
+   ========================= */
+
 button {
   border: none;
   padding: 6px 10px;
@@ -217,8 +246,9 @@ button:hover {
 }
 
 /* =========================
-   BADGES / HIGHLIGHT
-========================= */
+   BADGES / ANIMATION
+   ========================= */
+
 .badge-new {
   border-radius: 6px;
   font-weight: bold;
@@ -263,16 +293,19 @@ button:hover {
 }
 
 /* =========================
-   PREVIEW MODAL
-========================= */
+   PREVIEW MODAL (IMAGE VIEWER)
+   ========================= */
+
 .preview-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99999;
+
+  z-index: var(--z-modal);
 }
 
 .preview-overlay img {
@@ -284,6 +317,7 @@ button:hover {
   position: absolute;
   top: 20px;
   right: 20px;
+
   font-size: 24px;
   background: transparent;
   color: white;
@@ -292,16 +326,19 @@ button:hover {
 }
 
 /* =========================
-   MODAL
-========================= */
+   MODAL (GENERIC)
+   ========================= */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+
+  z-index: var(--z-modal);
 }
 
 .modal-content {
@@ -310,60 +347,84 @@ button:hover {
 }
 
 /* =========================
-   NAV DRAWER
-========================= */
+   NAV DRAWER (GLOBAL NAV)
+   ========================= */
 
 .btn-menu {
-  position: absolute;
-  left: 8px;
-  top: 8px;
+  position: fixed;
+
+  /* Keeps menu button fixed on viewport (mobile friendly UX) */
+  top: 12px;
+  left: 12px;
+
+  z-index: var(--z-base);
+
   background: #111;
   color: white;
-  padding: 6px 10px;
-  border-radius: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
 }
 
+/* Background overlay behind drawer */
 .drawer-overlay {
   position: fixed;
   inset: 0;
+
   background: rgba(0, 0, 0, 0.4);
-  z-index: 9998;
+
+  /* Sits above content but below drawer */
+  z-index: var(--z-overlay);
 }
 
+/* Side navigation drawer panel */
 .drawer {
   position: fixed;
   top: 0;
   left: -260px;
+
   width: 260px;
   height: 100vh;
+
   background: white;
-  z-index: 9999;
+
+  /* Drawer must appear above overlay */
+  z-index: var(--z-drawer);
+
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+
   transition: left 0.25s ease;
+
   display: flex;
   flex-direction: column;
 }
 
+/* Drawer open state */
 .drawer.open {
   left: 0;
 }
 
+/* Drawer header area */
 .drawer-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   padding: 12px;
   border-bottom: 1px solid #ddd;
 }
 
+/* Close button inside drawer */
 .btn-close {
   background: #111;
   color: white;
+
   border: none;
   width: 32px;
   height: 32px;
+
   border-radius: 8px;
   font-size: 16px;
+
   cursor: pointer;
 
   display: flex;
@@ -378,18 +439,23 @@ button:hover {
   transform: scale(1.05);
 }
 
+/* Drawer menu list */
 .drawer-body {
   padding: 10px;
+
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
+/* Individual menu item */
 .drawer-item {
   padding: 10px;
   border-radius: 6px;
   cursor: pointer;
+
   background: #f3f4f6;
+  transition: all 0.15s ease;
 }
 
 .drawer-item:hover {
