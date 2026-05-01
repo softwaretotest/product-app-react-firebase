@@ -14,14 +14,15 @@ function App() {
   const [actionType, setActionType] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const fetchProducts = useProductStore((state) => state.fetchProducts);
   const loadingId = useProductStore((state) => state.loadingId);
 
   const [isDirty, setIsDirty] = useState(false);
 
+  const fetch = useProductStore((state) => state.fetch);
+
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+    fetch();
+  }, [fetch]);
 
   // preview ESC close
   useEffect(() => {

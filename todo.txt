@@ -72,3 +72,52 @@ localStorage.setItem("productFormDraft", JSON.stringify(form));
 // load ตอน mount
 const draft = localStorage.getItem("productFormDraft");
 if (draft) setForm(JSON.parse(draft));
+------------------------------------------------------------
+Idea for longterm scale 
+เราจะมีสามแบบ 
+1. Generic UI dump / reusable 
+2. Generic UI smart 
+3. Generic UI Default (มีส่วน UI dump/reusable + smart) 
+สําหรับ Entity ที่มาแบบซ้ําซ้ํา product order customer CRUD 
+
+4.แต่สําหรับ Entity ที่พิเศษอย่างเช่น UI Special e.g. Bill, Email etc. 
+ที่ มี specific field เหนือจาก UI default เราจะใช้ฟังชัน prototype 
+อย่าง JavaScript หรือสิ่งที่คล้ายๆ object herachy กันมา inherit default 
+แล้วก็เพิ่มเข้าไปใน UI special . 
+ฟังดูตอนนี้เหมือน over engineering 
+แต่เราคุยถึงอนาคตที่มันยังไกลและมาไม่ถึงครับ 
+แต่นี่คือทางที่เราจะ scale โพรดักต์แล้วไม่ให้ 
+codes มหาศาลเกิดขึ้นได้ซ้ําซ้อน 
+คือเรายังไม่ทําสิ่งนี้วันนี้เป็นแผนระยะยาว
+
+ChatGPT ตอบ
+https://chatgpt.com/g/g-p-69d65319a4b481919399a67ee3196582-react-firebase/c/69f41d58-bd68-8321-98d3-5a85fef24854
+⚠️ จุดที่ผมจะเบรกคุณเบา ๆ
+
+❗ “UI inheritance แบบ prototype / hierarchy” ใน React
+= ทางที่เสี่ยงพังในระยะยาว
+
+เพราะ:
+
+React = composition-based
+inheritance ทำให้ coupling สูง
+debug ยากมากเมื่อซ้อนหลายชั้น
+
+พูดตรง ๆ:
+
+❌ อย่าใช้ prototype/inherit UI component
+✅ ใช้ composition + config
+
+✅ ทางที่ “scale ได้จริง” (และทีมใหญ่ใช้)
+
+แทนที่จะคิดแบบนี้:
+
+GenericUI → DefaultUI → SpecialUI (inherit)
+
+👉 เปลี่ยนเป็น:
+
+Generic UI (dumb)
+ + 
+Config / Props
+ +
+Small Wrapper (per entity)
