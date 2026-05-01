@@ -12,11 +12,11 @@ function useProductForm(initialData, onSubmit) {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  const [isDirty, setIsDirty] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const updateField = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    setIsDirty(true);
+    setHasUnsavedChanges(true);
   };
 
   const handleBlur = (field) => {
@@ -52,7 +52,7 @@ function useProductForm(initialData, onSubmit) {
     form,
     errors,
     touched,
-    isDirty,
+    hasUnsavedChanges: hasUnsavedChanges,
     updateField,
     handleBlur,
     submit,

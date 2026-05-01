@@ -13,8 +13,15 @@ function ProductForm({
   const fileInputRef = useRef(null);
   const inputRef = useRef(null);
 
-  const { form, errors, touched, isDirty, updateField, handleBlur, submit } =
-    useProductForm(initialData, onSubmit);
+  const {
+    form,
+    errors,
+    touched,
+    hasUnsavedChanges,
+    updateField,
+    handleBlur,
+    submit,
+  } = useProductForm(initialData, onSubmit);
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -33,8 +40,8 @@ function ProductForm({
   }, []);
 
   useEffect(() => {
-    onDirtyChange?.(isDirty); //if there is onDirtyChange, then call isDirty , else no error
-  }, [isDirty, onDirtyChange]);
+    onDirtyChange?.(hasUnsavedChanges); //if there is onDirtyChange, then call hasUnsavedChanges , else no error
+  }, [hasUnsavedChanges, onDirtyChange]);
 
   return (
     <form

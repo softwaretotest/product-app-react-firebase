@@ -1,35 +1,41 @@
 import { create } from "zustand";
 
+/**
+ * UI Adapter Layer for Zustand CRUD Stores
+ *
+ * This wrapper store sits on top of a base CRUD store and transforms
+ * generic state (items) into UI-friendly state (e.g. products, customers, orders).
+ *
+ * WHY THIS EXISTS:
+ * - baseStore handles pure business logic (CRUD)
+ * - wrapperStore adapts data for UI consumption
+ * - allows renaming, reshaping, and UI-level state control
+ *
+ * RESULT:
+ * UI components can use meaningful state names instead of generic "items"
+ * (e.g. productStore.products instead of productStore.items)
+ */
 const createWrapperStore = (baseStore, key = "items") => {
   return create((set) => ({
-    // --------------------------------------------
-    // 1. RENAMED STATE (UI-FRIENDLY STATE KEY)
-    // --------------------------------------------
-    // Instead of exposing "items", we rename it to something
-    // meaningful for each feature (e.g. products, customers, orders)
-    //
-    // This makes the store readable at UI level:
-    // productStore.products instead of productStore.items
+    /**
+     * UI-friendly renamed state derived from baseStore.items
+     */
     [key]: [],
 
-    // --------------------------------------------
-    // UI-LEVEL LOADING STATE
-    // --------------------------------------------
-    // This is separate from baseStore to allow UI-specific control
+    /**
+     * UI-level loading state (mapped from baseStore)
+     */
     loadingId: null,
 
     // --------------------------------------------
-    // 2. SYNC STATE FROM BASE STORE
+    // SYNC STATE FROM BASE STORE
     // --------------------------------------------
-    // Pulls data from the base CRUD store and pushes it into
-    // this wrapper store.
-    //
-    // WHY THIS EXISTS:
-    // - baseStore is generic and not UI-aware
-    // - wrapper store is UI-facing and may rename or reshape data
-    //
-    // Flow:
-    // baseStore.getState().items → wrapper state[key]
+    /**
+     * Syncs state from baseStore into wrapperStore
+     *
+     * Used when you want to manually refresh UI state
+     * from the underlying CRUD store.
+     */
     sync: () => {
       console.log("🟡 wrapper: sync");
 
@@ -42,13 +48,11 @@ const createWrapperStore = (baseStore, key = "items") => {
     },
 
     // --------------------------------------------
-    // 3. FETCH (UI-FRIENDLY API WRAPPER)
+    // FETCH WRAPPER API
     // --------------------------------------------
-    // Calls baseStore.fetchItems() and then syncs state
-    //
-    // WHY NOT CALL SERVICE DIRECTLY HERE:
-    // - keeps all business logic inside crud.store
-    // - wrapper only adapts state for UI
+    /**
+     * Fetch items via baseStore and update UI state
+     */
     fetch: async () => {
       console.log("🟡 wrapper: fetch");
 
@@ -61,10 +65,11 @@ const createWrapperStore = (baseStore, key = "items") => {
     },
 
     // --------------------------------------------
-    // ADD (UI-FRIENDLY WRAPPER API)
+    // ADD WRAPPER API
     // --------------------------------------------
-    // Simplifies baseStore.add() for UI usage
-    // and automatically updates wrapper state
+    /**
+     * Add new item via baseStore and sync UI state
+     */
     add: async (data) => {
       console.log("🟡 wrapper: add");
 
@@ -78,9 +83,11 @@ const createWrapperStore = (baseStore, key = "items") => {
     },
 
     // --------------------------------------------
-    // UPDATE (UI-FRIENDLY WRAPPER API)
+    // UPDATE WRAPPER API
     // --------------------------------------------
-    // Delegates update to baseStore and syncs result
+    /**
+     * Update existing item via baseStore and sync UI state
+     */
     update: async (id, data) => {
       console.log("🟡 wrapper: update");
 
@@ -92,9 +99,11 @@ const createWrapperStore = (baseStore, key = "items") => {
     },
 
     // --------------------------------------------
-    // REMOVE (UI-FRIENDLY WRAPPER API)
+    // REMOVE WRAPPER API
     // --------------------------------------------
-    // Handles deletion and ensures UI state stays in sync
+    /**
+     * Remove item via baseStore and sync UI state
+     */
     remove: async (id) => {
       console.log("🟡 wrapper: remove");
 
