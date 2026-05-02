@@ -2,7 +2,6 @@
    GLOBAL / RESET
    ========================= */
 
-/* Ensure consistent box sizing across all elements */
 * {
   box-sizing: border-box;
 }
@@ -15,90 +14,115 @@ body {
 }
 
 /* =========================
-   Z-INDEX SYSTEM (UI LAYERING)
+   Z-INDEX SYSTEM
    ========================= */
 
 :root {
-  /* Global stacking system for predictable UI layering
-     Higher values appear above lower values */
-
-  --z-base: 1; /* Default UI elements (buttons, icons) */
-  --z-content: 10; /* Main page content */
-  --z-overlay: 90; /* Background dim layer (drawer/modal backdrop) */
-  --z-drawer: 100; /* Side navigation drawer */
-  --z-modal: 200; /* Highest priority UI (image preview, dialogs) */
+  --z-base: 1;
+  --z-content: 10;
+  --z-overlay: 90;
+  --z-drawer: 100;
+  --z-modal: 200;
 }
 
 /* =========================
-   LAYOUT
+   APP SHELL (NEW LAYOUT)
    ========================= */
 
-/* Main container for centering app content */
+.app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  z-index: 0;
+}
+
+.sidebar {
+  width: 240px;
+  transition: width 0.2s ease;
+  overflow: hidden;
+  background: white;
+  border-right: 1px solid #ddd;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.nav {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #f3f4f6;
+}
+
+.nav-item:hover {
+  background: #e5e7eb;
+}
+
+.icon {
+  width: 24px;
+  text-align: center;
+}
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+}
+
+/* =========================
+   LEGACY LAYOUT (KEEP)
+   ========================= */
+
 .container {
   max-width: 600px;
   margin: auto;
   padding: 2px;
 }
 
-/* Header wrapper (can hold title + utilities) */
-.header {
-  position: relative;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-/* Sticky form area (stays visible during scroll) */
 .form-container {
   position: sticky;
   top: 0;
-  z-index: var(--z-content);
   background: white;
   padding: 2px;
   border-bottom: 1px solid #ccc;
-}
-
-/* Scrollable list container */
-.list-container {
-  min-height: calc(100vh - 180px);
-  overflow-y: auto;
-  padding-top: 10px;
+  z-index: var(--z-content);
 }
 
 /* =========================
-   TYPOGRAPHY
-   ========================= */
-
-h1 {
-  font-size: 1.2em;
-  text-decoration: underline;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-size: 1em;
-}
-
-/* =========================
-   HEADER UTILITIES
-   ========================= */
-
-.lang-switch {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 4px 8px;
-  border-radius: 6px;
-}
-
-.count-product {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-/* =========================
-   FORM
+   FORM (CRITICAL FIX)
    ========================= */
 
 form {
@@ -117,32 +141,8 @@ form {
   background: #537fd7;
 }
 
-.input-group {
-  display: flex;
-  align-items: center;
-}
-
-.input-group span {
-  margin-left: 8px;
-}
-
-input {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  text-align: center;
-}
-
-input::placeholder {
-  color: var(--text-muted);
-  opacity: 1;
-}
-
 /* =========================
-   FORM VALIDATION
+   INPUT ERROR
    ========================= */
 
 .input-error {
@@ -158,7 +158,7 @@ input::placeholder {
 }
 
 /* =========================
-   PRODUCT CARD
+   CARD
    ========================= */
 
 .card {
@@ -169,22 +169,12 @@ input::placeholder {
   margin-bottom: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 
-  /* Ensures correct scroll positioning when navigating to item */
   scroll-margin-top: 120px;
   scroll-margin-bottom: 80px;
 }
 
-.card h3 {
-  margin: 0 0 6px 0;
-}
-
-.card p {
-  margin: 2px 0;
-  color: #555;
-}
-
 /* =========================
-   PRODUCT IMAGE
+   IMAGE
    ========================= */
 
 .img-product {
@@ -246,7 +236,7 @@ button:hover {
 }
 
 /* =========================
-   BADGES / ANIMATION
+   BADGE + ANIMATION (RESTORED)
    ========================= */
 
 .badge-new {
@@ -293,46 +283,14 @@ button:hover {
 }
 
 /* =========================
-   PREVIEW MODAL (IMAGE VIEWER)
+   MODAL / OVERLAY (FIXED)
    ========================= */
 
-.preview-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  z-index: var(--z-modal);
-}
-
-.preview-overlay img {
-  max-width: 90%;
-  max-height: 90%;
-}
-
-.preview-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-
-  font-size: 24px;
-  background: transparent;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-/* =========================
-   MODAL (GENERIC)
-   ========================= */
-
+.preview-overlay,
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.75);
 
   display: flex;
   align-items: center;
@@ -341,123 +299,28 @@ button:hover {
   z-index: var(--z-modal);
 }
 
-.modal-content {
-  width: 90%;
-  max-width: 400px;
-}
-
 /* =========================
-   NAV DRAWER (GLOBAL NAV)
+   DRAWER (IF STILL USED)
    ========================= */
 
-.btn-menu {
-  position: fixed;
-
-  /* Keeps menu button fixed on viewport (mobile friendly UX) */
-  top: 12px;
-  left: 12px;
-
-  z-index: var(--z-base);
-
-  background: #111;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
-}
-
-/* Background overlay behind drawer */
 .drawer-overlay {
   position: fixed;
   inset: 0;
-
   background: rgba(0, 0, 0, 0.4);
-
-  /* Sits above content but below drawer */
   z-index: var(--z-overlay);
 }
 
-/* Side navigation drawer panel */
 .drawer {
   position: fixed;
   top: 0;
   left: -260px;
-
   width: 260px;
   height: 100vh;
-
   background: white;
-
-  /* Drawer must appear above overlay */
   z-index: var(--z-drawer);
-
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
-
   transition: left 0.25s ease;
-
-  display: flex;
-  flex-direction: column;
 }
 
-/* Drawer open state */
 .drawer.open {
   left: 0;
-}
-
-/* Drawer header area */
-.drawer-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
-}
-
-/* Close button inside drawer */
-.btn-close {
-  background: #111;
-  color: white;
-
-  border: none;
-  width: 32px;
-  height: 32px;
-
-  border-radius: 8px;
-  font-size: 16px;
-
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition: all 0.2s ease;
-}
-
-.btn-close:hover {
-  background: #333;
-  transform: scale(1.05);
-}
-
-/* Drawer menu list */
-.drawer-body {
-  padding: 10px;
-
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Individual menu item */
-.drawer-item {
-  padding: 10px;
-  border-radius: 6px;
-  cursor: pointer;
-
-  background: #f3f4f6;
-  transition: all 0.15s ease;
-}
-
-.drawer-item:hover {
-  background: #e5e7eb;
 }

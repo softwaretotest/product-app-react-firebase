@@ -1,55 +1,32 @@
-import { useState } from "react";
-
-import ProductPage from "@/features/product/product.page.jsx";
-import OrderPage from "@/pages/OrderPage";
-import CustomerPage from "@/pages/CustomerPage";
-
 import { L } from "@/i18n";
 
-export default function NavDrawer({ onSelect }) {
-  const [open, setOpen] = useState(false);
-
+export default function NavDrawer({ onSelect, collapsed, onToggle }) {
   const menuItems = [
-    { label: L.product, value: "products" },
-    { label: L.order, value: "orders" },
-    { label: L.customer, value: "customers" },
+    { label: L.product, value: "products", icon: "📦" },
+    { label: L.order, value: "orders", icon: "🧾" },
+    { label: L.customer, value: "customers", icon: "👤" },
   ];
 
-  const handleSelect = (value) => {
-    onSelect(value);
-    setOpen(false);
-  };
-
   return (
-    <>
-      <button className="btn-menu" onClick={() => setOpen(true)}>
-        ☰
+    <div className="nav">
+      {/* TOGGLE BUTTON */}
+      <button className="btn-menu" onClick={onToggle}>
+        {collapsed ? "☰" : "✕"}
       </button>
 
-      {open && (
-        <div className="drawer-overlay" onClick={() => setOpen(false)} />
-      )}
+      <div className="drawer-body">
+        {menuItems.map((item) => (
+          <div
+            key={item.value}
+            className="drawer-item"
+            onClick={() => onSelect(item.value)}
+          >
+            <span className="icon">{item.icon}</span>
 
-      <div className={`drawer ${open ? "open" : ""}`}>
-        <div className="drawer-header">
-          <h3>{L.menu}</h3>
-          <button className="btn-close" onClick={() => setOpen(false)}>
-            ✕
-          </button>
-        </div>
-
-        <div className="drawer-body">
-          {menuItems.map((item) => (
-            <div
-              key={item.value}
-              className="drawer-item"
-              onClick={() => handleSelect(item.value)}
-            >
-              {item.label}
-            </div>
-          ))}
-        </div>
+            {!collapsed && <span className="label">{item.label}</span>}
+          </div>
+        ))}
       </div>
-    </>
+    </div>
   );
 }
