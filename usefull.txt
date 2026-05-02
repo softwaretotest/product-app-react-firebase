@@ -1,0 +1,3 @@
+To export all files from a feature/entity/*.*
+o@o MINGW64 ~/.vscode/react/product/src/features/product (main)
+$ cat *.txt *.js *.jsx

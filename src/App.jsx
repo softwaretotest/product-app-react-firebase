@@ -1,7 +1,7 @@
-import NavDrawer from "@/components/NavDrawer";
+import AppLayout from "@/controllers/AppLayout";
 
 function App() {
-  return <NavDrawer />;
+  return <AppLayout />;
 }
 
 export default App;

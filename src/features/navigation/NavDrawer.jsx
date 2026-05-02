@@ -6,49 +6,33 @@ import CustomerPage from "@/pages/CustomerPage";
 
 import { L } from "@/i18n";
 
-export default function NavDrawer() {
+export default function NavDrawer({ onSelect }) {
   const [open, setOpen] = useState(false);
-  const [page, setPage] = useState("products");
 
   const menuItems = [
-    { label: L.product, value: L.product },
-    { label: L.order, value: L.order },
-    { label: L.customer, value: L.customer },
+    { label: L.product, value: "products" },
+    { label: L.order, value: "orders" },
+    { label: L.customer, value: "customers" },
   ];
 
   const handleSelect = (value) => {
-    setPage(value);
+    onSelect(value);
     setOpen(false);
-  };
-
-  const renderPage = () => {
-    switch (page) {
-      case L.order:
-        return <OrderPage />;
-      case L.customer:
-        return <CustomerPage />;
-      default:
-        return <ProductPage />;
-    }
   };
 
   return (
     <>
-      {/* toggle button */}
       <button className="btn-menu" onClick={() => setOpen(true)}>
         ☰
       </button>
 
-      {/* overlay */}
       {open && (
         <div className="drawer-overlay" onClick={() => setOpen(false)} />
       )}
 
-      {/* drawer */}
       <div className={`drawer ${open ? "open" : ""}`}>
         <div className="drawer-header">
           <h3>{L.menu}</h3>
-
           <button className="btn-close" onClick={() => setOpen(false)}>
             ✕
           </button>
@@ -66,9 +50,6 @@ export default function NavDrawer() {
           ))}
         </div>
       </div>
-
-      {/* PAGE RENDER  */}
-      <div style={{ paddingTop: "50px" }}>{renderPage()}</div>
     </>
   );
 }
