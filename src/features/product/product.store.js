@@ -8,7 +8,7 @@ import {
   addProduct,
   updateProduct,
   deleteProduct,
-} from "../services/product.service";
+} from "@/features/product/product.service.js";
 
 // base
 const useProductBaseStore = createCrudStore({

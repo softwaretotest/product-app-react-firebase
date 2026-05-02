@@ -1,5 +1,5 @@
 // Display list of products with basic states
-import ProductCard from "@/features/product/components/ProductCard";
+import ProductCard from "@/features/product/product.component.card";
 import { L } from "@/i18n";
 
 function ProductList({

@@ -37,8 +37,6 @@ const createWrapperStore = (baseStore, key = "items") => {
      * from the underlying CRUD store.
      */
     sync: () => {
-      console.log("🟡 wrapper: sync");
-
       const { items, loadingId } = baseStore.getState();
 
       set({
@@ -54,8 +52,6 @@ const createWrapperStore = (baseStore, key = "items") => {
      * Fetch items via baseStore and update UI state
      */
     fetch: async () => {
-      console.log("🟡 wrapper: fetch");
-
       await baseStore.getState().fetchItems();
 
       set({

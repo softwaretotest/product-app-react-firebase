@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
   resolve: {
     alias: {
-      // simplify import from path ../../ e.g. import ProductCard from "@/components";
+      // simplify import from path ../../ e.g. import SomethingCard from "@/components";
       "@": path.resolve(__dirname, "./src"),
     },
   },

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import ProductPage from "@/pages/ProductPage";
+import ProductPage from "@/features/product/product.page.jsx";
 import OrderPage from "@/pages/OrderPage";
 import CustomerPage from "@/pages/CustomerPage";
 

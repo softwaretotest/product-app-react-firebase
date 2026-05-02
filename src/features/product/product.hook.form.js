@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { validateProduct } from "@/validators/product.validator";
+import { validateProduct } from "@/features/product/product.validator";
 import { L } from "@/i18n";
 function useProductForm(initialData, onSubmit) {
   const [form, setForm] = useState({
@@ -11,7 +11,6 @@ function useProductForm(initialData, onSubmit) {
 
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
-
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const updateField = (field, value) => {

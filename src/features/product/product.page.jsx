@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
-import useProductStore from "@/features/product/store/product.store";
-import { ProductForm, ProductList } from "@/features/product";
+import useProductStore from "@/features/product/product.store";
+import ProductForm from "@/features/product/product.component.form";
+import ProductList from "@/features/product/product.component.list";
 import Modal from "@/components/Modal";
 import { L, formatCurrency } from "@/i18n";
 import "@/styles/app.css";
 
 // 👉 Product Controller (business logic layer)
-import { productController } from "@/features/product/controllers/product.controller";
+import { productController } from "@/features/product/product.controller";
 
 /**
  * ProductPage

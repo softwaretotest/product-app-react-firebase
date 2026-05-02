@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { compressImage } from "@/utils/image";
-import { useProductForm } from "@/features/product";
+import useProductForm from "@/features/product/product.hook.form";
 import { L, getCurrencyLabel } from "@/i18n";
 
 function ProductForm({

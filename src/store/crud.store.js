@@ -25,8 +25,6 @@ const createCrudStore = (service) => {
      * Fetch all items from backend and store into state
      */
     fetchItems: async () => {
-      console.log("🔥 crud.store: fetchItems");
-
       const list = await getItems();
 
       /**
@@ -44,8 +42,6 @@ const createCrudStore = (service) => {
      * Add new item to database and update local state
      */
     add: async (data) => {
-      console.log("🔥 crud.store: add");
-
       const newItem = {
         ...data,
         createdAt: Date.now(),
@@ -70,8 +66,6 @@ const createCrudStore = (service) => {
      * Update existing item by id
      */
     update: async (id, data) => {
-      console.log("🔥 crud.store: update");
-
       await updateItem(id, data);
 
       /**
@@ -89,8 +83,6 @@ const createCrudStore = (service) => {
      * Delete item by id
      */
     remove: async (id) => {
-      console.log("🔥 crud.store: remove");
-
       /**
        * mark loading for UI feedback
        */

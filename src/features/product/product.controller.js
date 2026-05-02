@@ -1,4 +1,4 @@
-import useProductStore from "@/features/product/store/product.store";
+import useProductStore from "@/features/product/product.store.js";
 
 /**
  * Product Controller
